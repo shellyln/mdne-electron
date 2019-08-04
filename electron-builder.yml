@@ -1,0 +1,19 @@
+directories:
+  output: dist.electron
+  buildResources: build
+appId: com.shellyln.mdne-electron
+win:
+  icon: icons/app.ico
+  target: nsis
+linux:
+  icon: icons/app
+  target:
+    - deb
+    - rpm
+mac:
+  icon: icons/icon.icns
+  target: dmg
+  category: public.app-category.developer-tools
+asarUnpack:
+  - config/**
+  - contents/out/**

@@ -1,0 +1,80 @@
+{
+  "name": "mdne-electron",
+  "version": "0.0.1",
+  "private": false,
+  "description": "Markdown Neo Edit for Electron - A simple markdown and code editor powered by Markdown-it, Ace and Electron.",
+  "keywords": [
+    "Markdown",
+    "Editor",
+    "markdown-it",
+    "Ace",
+    "PDF",
+    "Lisp",
+    "LSX",
+    "Ménneu",
+    "Liyad",
+    "Electron",
+    "puppeteer"
+  ],
+  "scripts": {
+    "start": "electron .",
+    "pack": "run-s dist:clean pack:1",
+    "pack:1": "electron-builder --dir -c electron-builder.yml",
+    "dist:win": "run-s dist:clean dist:win:1",
+    "dist:win:1": "electron-builder -c electron-builder.yml --x64 --win",
+    "dist:linux": "run-s dist:clean dist:linux:1",
+    "dist:linux:1": "electron-builder -c electron-builder.yml --x64 --linux",
+    "dist:mac": "run-s dist:clean dist:mac:1",
+    "dist:mac:1": "electron-builder -c electron-builder.yml --x64 --mac",
+    "dist": "run-s dist:clean dist:1",
+    "dist:1": "electron-builder -c electron-builder.yml",
+    "dist:clean": "rm -f ./contents/out/preview.*",
+    "build:mainproc": "webpack-cli --mode=development --config webpack.mainproc.config.js",
+    "build": "run-s build:mainproc",
+    "clean": "rm -rf ./dist && rm -rf ./bin && rm -f ./contents/out/preview.* && rm -rf ./dist.electron",
+    "lint": "run-s lint:ts lint:es",
+    "lint:ts": "tslint ./src.mainproc/**/*.ts ./src.mainproc/**/*.js -t verbose",
+    "lint:es": "eslint ./contents/assets/script/**/*.js",
+    "test": "echo test",
+    "prepublishOnly": "run-s clean build test lint"
+  },
+  "dependencies": {
+    "carlo": "^0.9.46"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "babel-eslint": "^10.0.2",
+    "babel-loader": "^8.0.6",
+    "bufferutil": "^4.0.1",
+    "@types/node": "^12.6.9",
+    "electron": "^6.0.0",
+    "electron-builder": "^21.2.0",
+    "eslint": "^6.1.0",
+    "liyad": "^0.1.2",
+    "menneu": "^0.1.2",
+    "node-sass": "^4.12.0",
+    "npm-run-all": "^4.1.5",
+    "raw-loader": "^3.1.0",
+    "red-agate": "^0.2.19",
+    "sass-loader": "^7.1.0",
+    "source-map-loader": "^0.2.4",
+    "tslint": "^5.18.0",
+    "ts-loader": "^6.0.4",
+    "typescript": "^3.5.3",
+    "utf-8-validate": "^5.0.2",
+    "webpack": "^4.39.1",
+    "webpack-cli": "^3.3.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shellyln/mdne-electron.git"
+  },
+  "author": {
+    "name": "shellyln",
+    "email": "shellyln@users.noreply.github.com"
+  },
+  "homepage": "https://shellyln.github.io/",
+  "license": "ISC"
+}
