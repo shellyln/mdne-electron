@@ -28,7 +28,7 @@
     "dist:mac:1": "electron-builder -c electron-builder.yml --x64 --mac",
     "dist": "run-s dist:clean dist:1",
     "dist:1": "electron-builder -c electron-builder.yml",
-    "dist:clean": "rm -f ./contents/out/preview.*",
+    "dist:clean": "rm -f ./contents/out/preview.* && touch ./contents/out/preview.html ./contents/out/preview.pdf",
     "build:mainproc": "webpack-cli --mode=development --config webpack.mainproc.config.js",
     "build": "run-s build:mainproc",
     "clean": "rm -rf ./dist && rm -rf ./bin && rm -f ./contents/out/preview.* && rm -rf ./dist.electron",
