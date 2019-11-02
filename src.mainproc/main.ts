@@ -8,7 +8,9 @@ import * as fs              from 'fs';
 import * as path            from 'path';
 import * as url             from 'url';
 import * as util            from 'util';
-import { app, protocol }    from 'electron';
+import { app,
+         protocol,
+         shell }            from 'electron';
 
 // Configurations
 import { appConfig }        from './lib/conf';
@@ -39,6 +41,7 @@ app.on('ready', function() {
     let contentsRoot = path.join(app.getAppPath(), contentsRootDir);
     let assetsRoot = path.join(contentsRoot, 'assets');
     let outRoot = path.join(contentsRoot, 'out');
+    let embedHtml = path.join(contentsRoot, 'embed.html');
     let previewHtml = path.join(outRoot, 'preview.html');
     let previewPdf = path.join(outRoot, 'preview.pdf');
 
@@ -46,21 +49,24 @@ app.on('ready', function() {
         contentsRoot = contentsRoot.replace(/\\/g, '/');
         assetsRoot = assetsRoot.replace(/\\/g, '/');
         outRoot = outRoot.replace(/\\/g, '/');
+        embedHtml = embedHtml.replace(/\\/g, '/');
         previewHtml = previewHtml.replace(/\\/g, '/');
         previewPdf = previewPdf.replace(/\\/g, '/');
     }
 
+    // NOTE: BUG: electron 7 don't look automatically dynamic `/app.asar.unpacked/*` contents?
+    const toUnpackedPath = (p: string) => app.isPackaged ?
+        p.replace(/\/app.asar\//, '/app.asar.unpacked/') : p;
+    const previewPdfUnpackedPath = toUnpackedPath(previewPdf);
+
     const normalizePath = (filePath: string, isAppScheme: boolean) => {
         if (!isAppScheme && process.platform === 'win32') {
-            if (filePath.match(/^[\/\\][A-Za-z]:/)) {
+            filePath = filePath.replace(/\\/g, '/');
+            if (filePath.match(/^\/[A-Za-z]:/)) {
                 filePath = filePath.slice(1);
             }
-            filePath = filePath.replace(/\\/g, '/');
             if (filePath === previewHtml || filePath === previewPdf) {
-                if (app.isPackaged) {
-                    // NOTE: BUG: electron 7 don't look automatically dynamic `/app.asar.unpacked/*` contents?
-                    filePath = filePath.replace(/\/app.asar\//, '/app.asar.unpacked/');
-                }
+                filePath = toUnpackedPath(filePath);
             } else if (filePath.startsWith(outRoot)) {
                 filePath = path.join(getLastSrcPath(), filePath.slice(outRoot.length));
             }
@@ -73,11 +79,21 @@ app.on('ready', function() {
                 filePath = path.join(getLastSrcPath(), filePath.slice(outRoot.length));
             }
         }
-        return path.normalize(filePath);
+        filePath = path.normalize(filePath);
+        if (process.platform === 'win32') {
+            filePath = filePath.replace(/\\/g, '/');
+        }
+        return filePath;
     };
 
     protocol.interceptFileProtocol('file', (req, callback) => {
         const filePath = normalizePath(decodeURIComponent(new url.URL(req.url).pathname), false);
+        if (filePath === embedHtml) {
+            // Complement for PDF plugin problem.
+            // TODO: Remove if plugin is fixed.
+            //       https://github.com/electron/electron/issues/12337
+            shell.openExternal(previewPdfUnpackedPath);
+        }
         callback(filePath);
     });
 
