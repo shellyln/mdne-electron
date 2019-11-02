@@ -52,11 +52,15 @@ app.on('ready', function() {
 
     const normalizePath = (filePath: string, isAppScheme: boolean) => {
         if (!isAppScheme && process.platform === 'win32') {
-            if (filePath.match(/^\/[A-Za-z]:/)) {
+            if (filePath.match(/^[\/\\][A-Za-z]:/)) {
                 filePath = filePath.slice(1);
             }
+            filePath = filePath.replace(/\\/g, '/');
             if (filePath === previewHtml || filePath === previewPdf) {
-                // nothing to do
+                if (app.isPackaged) {
+                    // NOTE: BUG: electron 7 don't look automatically dynamic `/app.asar.unpacked/*` contents?
+                    filePath = filePath.replace(/\/app.asar\//, '/app.asar.unpacked/');
+                }
             } else if (filePath.startsWith(outRoot)) {
                 filePath = path.join(getLastSrcPath(), filePath.slice(outRoot.length));
             }
