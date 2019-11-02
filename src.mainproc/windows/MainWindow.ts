@@ -7,6 +7,7 @@ import * as path            from 'path';
 import * as electron        from 'electron';
 import { app,
          BrowserWindow,
+         Menu,
          dialog,
          shell }            from 'electron';
 import { contentsRootDir }  from '../settings';
@@ -108,7 +109,9 @@ export function createMainWindow() {
     });
 
     if (app.isPackaged) {
-        mainWindow.removeMenu();
+        Menu.setApplicationMenu(null); // electron 7.x.x
+        // mainWindow.removeMenu();    // electron 6.x.x
+        // mainWindow.setMenu(null);   // electron 5.x.x
     }
 
     (mainWindow as any).editorIsDirty = false;
