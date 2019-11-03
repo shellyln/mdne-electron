@@ -94,13 +94,19 @@ export default class App extends React.Component {
         }
         // eslint-disable-next-line no-undef
         if (window.dialogPolyfill) {
-            // emulation
+            // initialize polyfill emulated elements
             const dialogs = document.querySelectorAll('dialog');
             for (let i = 0; i < dialogs.length; i++) {
                 const dialog = dialogs[i];
                 // eslint-disable-next-line no-undef
                 dialogPolyfill.registerDialog(dialog);
             }
+        }
+
+        {
+            const appSettingsStr = window.localStorage.getItem('_mdne_app_settings__Xlnuf3Ao') || '{}';
+            const editor = AppState.AceEditor[this.state.currentAceId];
+            editor.setOptions(JSON.parse(appSettingsStr));
         }
 
         document.onkeyup = (ev) => {
@@ -115,6 +121,7 @@ export default class App extends React.Component {
             notifyEditorDirty(false);
 
             document.title = `${AppState.AppName} - ${'(New file)'}`;
+            this.refs.appIndicatorBar.innerText = '(New file)';
 
             const editor = AppState.AceEditor[this.state.currentAceId];
             editor.clearSelection();
@@ -132,6 +139,7 @@ export default class App extends React.Component {
                 notifyEditorDirty(false);
     
                 document.title = `${AppState.AppName} - ${AppState.filePath}`;
+                this.refs.appIndicatorBar.innerText = AppState.filePath;
     
                 const editor = AppState.AceEditor[this.state.currentAceId];
                 editor.clearSelection();
@@ -199,7 +207,7 @@ export default class App extends React.Component {
                 this.savedEditorStyleWidth = this.refs.editor.refs.outerWrap.style.width;
                 this.savedPreviewScrollY = this.refs.root.contentWindow.scrollY;
             } catch (e) {
-                // emulation
+                // NOTE: ignore errors
             }
             this.refs.editor.refs.outerWrap.style.width = null;
             this.refs.editorPlaceholder.style.width = null;
@@ -304,6 +312,7 @@ export default class App extends React.Component {
         editor.session.getUndoManager().markClean();
         notifyEditorDirty(false);
         document.title = `${AppState.AppName} - ${AppState.filePath}`;
+        this.refs.appIndicatorBar.innerText = AppState.filePath;
     }
 
     // eslint-disable-next-line no-unused-vars
@@ -400,6 +409,15 @@ export default class App extends React.Component {
     }
 
     // eslint-disable-next-line no-unused-vars
+    handleSettingsClick(ev) {
+        const editor = AppState.AceEditor[this.state.currentAceId];
+        this.refs.settingsDialog.showModal(editor.getOptions(), (settings) => {
+            editor.setOptions(settings);
+            window.localStorage.setItem('_mdne_app_settings__Xlnuf3Ao', JSON.stringify(settings));
+        });
+    }
+
+    // eslint-disable-next-line no-unused-vars
     handleAceEditorOnChange(o) {
         if (! AppState.fileChanged) {
             const editor = AppState.AceEditor[this.state.currentAceId];
@@ -408,6 +426,7 @@ export default class App extends React.Component {
             }
             notifyEditorDirty(true);
             document.title = `${AppState.AppName} - ● ${AppState.filePath || '(New file)'}`;
+            this.refs.appIndicatorBar.innerText = `● ${AppState.filePath || '(New file)'}`;
         }
 
         if (!this.state.stretched && this.state.syncPreview && !this.state.isPdf) {
@@ -543,11 +562,23 @@ export default class App extends React.Component {
     }
 
     render() {
+        const isEmulation = window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATION';
+        const ua = window.navigator.userAgent;
+        // NOTE: Chromium Edge treats as Chrome.
+        const isChrome =
+            ua.match(' Chrome/') &&
+            !ua.match(' CriOS/') &&
+            !ua.match(' OPR/') &&
+            !ua.match(' Presto/') &&
+            !ua.match(' Vivaldi/') &&
+            !ua.match(' Iron Safari/') &&
+            !ua.match(' Sleipnir/') &&
+            !ua.match(' Mobile Safari/');
+
         return (lsx`
         (Template
             (div (@ (className "AppMainMenuWrap"))
                 (a (@ (className "AppMainMenu dropdown-trigger btn-floating")
-                      (href "javascript:void 0")
                       (data-target "dropdown1") )
                     (i (@ (className "AppMainMenuIcon material-icons large")) "dehaze") )
                 (ul (@ (id "dropdown1")
@@ -577,7 +608,7 @@ export default class App extends React.Component {
                     (MenuDivider)
                     (MenuItem (@ (icon "settings")
                                  (caption "Settings...")
-                                 (onClick ${() => this.refs.settingsDialog.showModal({}, () => {})}) ))
+                                 (onClick ${(ev) => this.handleSettingsClick(ev)}) ))
                     (MenuItem (@ (icon "help_outline")
                                  (caption "Help")
                                  (onClick ${() => openURL('https://github.com/shellyln/mdne')}) )) )
@@ -605,7 +636,10 @@ export default class App extends React.Component {
                         (input (@ (ref "commandBox")
                                   (className "CommandBoxInput command-box-input autocomplete")
                                   (type "text")
-                                  (placeholder "Command palette    (Ctrl+Shift+O)")
+                                  (placeholder ($concat
+                                      "Command palette    (" ${
+                                      isEmulation && isChrome ? 'Alt+Ctrl+Shift+O' :'Ctrl+Shift+O'
+                                      } ")" ))
                                   (spellcheck "false")
                                   (onBlur ${(ev) => this.handleCommandBoxOnBlur(ev)})
                                   (onKeyDown ${(ev) => this.handleCommandBoxOnKeyDown(ev)}) ))))
@@ -644,7 +678,10 @@ export default class App extends React.Component {
                            (src "empty.html")
                            ; (sandbox "")
                            (className ($concat "OutputIframe"
-                                      ${this.state.stretched || this.state.splitterMoving ? " collapsed" : ""}) ))))
+                                      ${this.state.stretched || this.state.splitterMoving ? " collapsed" : ""}) ) ))
+                (div (@ (ref "appIndicatorBar")
+                        (id "appIndicatorBar")
+                        (className "AppIndicatorBar")) "") )
             (FileDropDialog (@ (ref "fileDropDialog")))
             (FileOpenDialog (@ (ref "fileOpenDialog")))
             (FileSaveDialog (@ (ref "fileSaveDialog")))

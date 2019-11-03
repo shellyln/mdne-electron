@@ -36,7 +36,10 @@
     "lint:ts": "tslint ./src.mainproc/**/*.ts ./src.mainproc/**/*.js -t verbose",
     "lint:es": "eslint ./contents/assets/script/**/*.js",
     "test": "echo test",
-    "prepublishOnly": "run-s clean build test lint"
+    "prepublishOnly": "run-s clean build test lint",
+    "import-contents": "run-s import-contents:1 import-contents:2",
+    "import-contents:1": "cp -R ../mdne/contents/assets/script ./contents/assets/.",
+    "import-contents:2": "rm ./contents/assets/script/backend-emu.js"
   },
   "dependencies": {
     "carlo": "^0.9.46"
