@@ -10,6 +10,8 @@
     window.carlo = window.carlo || {};
 
     window._MDNE_BACKEND_TYPE = 'ELECTRON_IPC';
+    window._MDNE_BACKEND_CAPS_NO_PDF_RENDERER = false;
+    window._MDNE_BACKEND_CAPS_NO_PDF_PREVIEW_PLUGIN = true;
 
 
     function ipc(eventName, params) {
