@@ -9,6 +9,8 @@
     window.rpc.handle = window.rpc.handle || (x => x);
     window.carlo = window.carlo || {};
 
+    window._MDNE_BACKEND_TYPE = 'ELECTRON_IPC';
+
 
     function ipc(eventName, params) {
         return new Promise((resolve, reject) => {
