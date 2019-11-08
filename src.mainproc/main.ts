@@ -15,7 +15,8 @@ import { app,
 // Configurations
 import { appConfig }        from './lib/conf';
 import { contentsRootDir }  from './settings';
-import { getLastSrcPath }   from './lib/paths';
+import { getLastSrcPath,
+         toUnpackedPath }   from './lib/paths';
 import   getContentType     from './lib/mime';
 
 // Window
@@ -55,8 +56,6 @@ app.on('ready', function() {
     }
 
     // NOTE: BUG: electron 7 don't look automatically dynamic `/app.asar.unpacked/*` contents?
-    const toUnpackedPath = (p: string) => app.isPackaged ?
-        p.replace(/\/app.asar\//, '/app.asar.unpacked/') : p;
     const previewPdfUnpackedPath = toUnpackedPath(previewPdf);
 
     const normalizePath = (filePath: string, isAppScheme: boolean) => {

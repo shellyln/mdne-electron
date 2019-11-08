@@ -28,4 +28,8 @@ export function resetLastSrcPath() {
     return lastSrcDir;
 }
 
+// NOTE: BUG: electron 7 don't look automatically dynamic `/app.asar.unpacked/*` contents?
+export const toUnpackedPath = (p: string) => app.isPackaged ?
+    p.replace(/\/app.asar\//, '/app.asar.unpacked/') : p;
+
 resetLastSrcPath();
