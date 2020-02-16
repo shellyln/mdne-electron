@@ -97,7 +97,9 @@ ipcMain.on('app:editor:toggleFullScreen', (event: any, arg: any) => {
     try {
         if (arg.force || app.isPackaged) {
             const win = BrowserWindow.fromWebContents(event.sender);
-            win.setFullScreen(!win.isFullScreen());
+            if (win) {
+                win.setFullScreen(!win.isFullScreen());
+            }
         }
     } catch (e) {
         // tslint:disable-next-line:no-console
@@ -123,7 +125,10 @@ ipcMain.on('app:editor:notifyEditorDirty', (event: any, arg: any) => {
 
 ipc('app:editor:nativeAlert', (arg, sender) =>
     nativeAlert(BrowserWindow.fromWebContents(sender), arg.message, arg.type));
-async function nativeAlert(sender: BrowserWindow, message: string, type: string) {
+async function nativeAlert(sender: BrowserWindow | null, message: string, type: string) {
+    if (!sender) {
+        throw new Error('Sender BrowserWindow is not exists.');
+    }
     const promise = dialog.showMessageBox(sender, {
         type: type || 'error',
         message,
@@ -135,7 +140,10 @@ async function nativeAlert(sender: BrowserWindow, message: string, type: string)
 
 ipcSync('app:editor:nativeAlertSync', (arg, sender) =>
     nativeAlertSync(BrowserWindow.fromWebContents(sender), arg.message, arg.type));
-function nativeAlertSync(sender: BrowserWindow, message: string, type: string) {
+function nativeAlertSync(sender: BrowserWindow | null, message: string, type: string) {
+    if (!sender) {
+        throw new Error('Sender BrowserWindow is not exists.');
+    }
     dialog.showMessageBoxSync(sender, {
         type: type || 'error',
         message,
@@ -147,7 +155,10 @@ function nativeAlertSync(sender: BrowserWindow, message: string, type: string) {
 
 ipc('app:editor:nativeConfirm', (arg, sender) =>
     nativeConfirm(BrowserWindow.fromWebContents(sender), arg.message, arg.type));
-async function nativeConfirm(sender: BrowserWindow, message: string, type: string) {
+async function nativeConfirm(sender: BrowserWindow | null, message: string, type: string) {
+    if (!sender) {
+        throw new Error('Sender BrowserWindow is not exists.');
+    }
     const promise = dialog.showMessageBox(sender, {
         type: type || 'warning',
         message,
@@ -160,7 +171,10 @@ async function nativeConfirm(sender: BrowserWindow, message: string, type: strin
 
 ipcSync('app:editor:nativeConfirmSync', (arg, sender) =>
     nativeConfirmSync(BrowserWindow.fromWebContents(sender), arg.message, arg.type));
-function nativeConfirmSync(sender: BrowserWindow, message: string, type: string) {
+function nativeConfirmSync(sender: BrowserWindow | null, message: string, type: string) {
+    if (!sender) {
+        throw new Error('Sender BrowserWindow is not exists.');
+    }
     const ret = dialog.showMessageBoxSync(sender, {
         type: type || 'warning',
         message,
@@ -172,7 +186,10 @@ function nativeConfirmSync(sender: BrowserWindow, message: string, type: string)
 
 ipc('app:editor:nativeFileOpenDialog', (arg, sender) =>
     nativeFileOpenDialog(BrowserWindow.fromWebContents(sender), arg.title, arg.defaultPath, arg.filters));
-async function nativeFileOpenDialog(sender: BrowserWindow, title: string, defaultPath: string, filters: any) {
+async function nativeFileOpenDialog(sender: BrowserWindow | null, title: string, defaultPath: string, filters: any) {
+    if (!sender) {
+        throw new Error('Sender BrowserWindow is not exists.');
+    }
     const promise = dialog.showOpenDialog(sender, {
         title,
         defaultPath: defaultPath || getDesktopPath(),
@@ -188,7 +205,10 @@ async function nativeFileOpenDialog(sender: BrowserWindow, title: string, defaul
 
 ipc('app:editor:nativeFileSaveDialog', (arg, sender) =>
     nativeFileSaveDialog(BrowserWindow.fromWebContents(sender), arg.title, arg.defaultPath, arg.filters));
-async function nativeFileSaveDialog(sender: BrowserWindow, title: string, defaultPath: string, filters: any) {
+async function nativeFileSaveDialog(sender: BrowserWindow | null, title: string, defaultPath: string, filters: any) {
+    if (!sender) {
+        throw new Error('Sender BrowserWindow is not exists.');
+    }
     const promise = dialog.showSaveDialog(sender, {
         title,
         defaultPath: defaultPath || getDesktopPath(),
