@@ -91,7 +91,8 @@ app.on('ready', function() {
             // Complement for PDF plugin problem.
             // TODO: Remove if plugin is fixed.
             //       https://github.com/electron/electron/issues/12337
-            shell.openExternal(previewPdfUnpackedPath);
+            // NOTE: PDF viewer plugin is fixed on Electron 9
+            // shell.openExternal(previewPdfUnpackedPath);
         }
         callback(filePath);
     });
