@@ -51,6 +51,7 @@
     "rules": {
         "no-console": "warn",
         "no-unused-vars": "warn",
-        "no-empty": "warn"
+        "no-empty": "warn",
+        "no-inner-declarations": 0
     }
 }
