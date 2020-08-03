@@ -10,6 +10,7 @@ import * as url             from 'url';
 import * as util            from 'util';
 import { app,
          protocol,
+         Menu,
          shell }            from 'electron';
 
 // Configurations
@@ -30,6 +31,12 @@ import './ipc/app';
 // Read the application config.
 // tslint:disable-next-line:no-console
 // console.log('app config: ' + JSON.stringify(appConfig, null, 2));
+
+
+if (app.isPackaged) {
+    // Removing the menu bar from the window.
+    Menu.setApplicationMenu(null);
+}
 
 
 // App lifecycle events.

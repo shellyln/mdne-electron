@@ -121,12 +121,6 @@ export function createMainWindow() {
         // }
     });
 
-    if (app.isPackaged) {
-        Menu.setApplicationMenu(null); // electron 7.x.x
-        // mainWindow.removeMenu();    // electron 6.x.x
-        // mainWindow.setMenu(null);   // electron 5.x.x
-    }
-
     (mainWindow as any).editorIsDirty = false;
 
     return mainWindow;
