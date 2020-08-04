@@ -7,6 +7,7 @@ import   child_process      from 'child_process';
 import   fs                 from 'fs';
 import   path               from 'path';
 import   util               from 'util';
+import   os                 from 'os';
 import { HtmlRenderer }     from 'red-agate/modules/red-agate/renderer';
 import   requireDynamic     from 'red-agate-util/modules/runtime/require-dynamic';
 import { render,
@@ -30,6 +31,8 @@ const readFileAsync  = util.promisify(fs.readFile);
 const writeFileAsync = util.promisify(fs.writeFile);
 const readdirAsync   = util.promisify(fs.readdir);
 const statAsync      = util.promisify(fs.stat);
+const mkdirAsync     = util.promisify(fs.mkdir);
+const copyFileAsync  = util.promisify(fs.copyFile);
 
 
 
@@ -292,14 +295,29 @@ async function renderByMenneu(
         process.chdir(curDir);
     }
 
-    const outPath = exportPath.length === 0 ?
-        path.normalize(path.join(thisDirName, `./${contentsRootDir}/out/preview.${options.outputFormat}`)) :
-        path.normalize(path.join(...exportPath));
-    await writeFileAsync(outPath, buf);
+    if (options.outputFormat.toLowerCase() === 'pdf') {
+        const pdfDir = `${os.tmpdir()}/mdne-electron/pdf`;
+        await mkdirAsync(path.join(pdfDir, 'out'), {recursive: true});
 
-    return options.outputFormat.toLowerCase() === 'pdf' ?
-        'embed.html' :
-        'out/preview.' + options.outputFormat;
+        const embedHtmlPath = path.join(pdfDir, 'embed.html');
+        await copyFileAsync(
+            path.normalize(path.join(thisDirName, `./${contentsRootDir}/embed.html`)),
+            embedHtmlPath);
+
+        const outPath = exportPath.length === 0 ?
+            path.normalize(path.join(pdfDir, `./out/preview.pdf`)) :
+            path.normalize(path.join(...exportPath));
+        await writeFileAsync(outPath, buf);
+
+        return embedHtmlPath;
+    } else {
+        const outPath = exportPath.length === 0 ?
+            path.normalize(path.join(thisDirName, `./${contentsRootDir}/out/preview.${options.outputFormat}`)) :
+            path.normalize(path.join(...exportPath));
+        await writeFileAsync(outPath, buf);
+
+        return 'out/preview.' + options.outputFormat;
+    }
 }
 
 
