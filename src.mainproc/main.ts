@@ -114,7 +114,7 @@ app.on('ready', function() {
             console.error(e);
             // tslint:disable-next-line:no-console
             console.error(req.url);
-            callback();
+            callback({ statusCode: 500 });
         }
     });
 
