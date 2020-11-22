@@ -10,7 +10,7 @@ import * as url             from 'url';
 import * as util            from 'util';
 import { app,
          protocol,
-         shell }            from 'electron';
+         Menu }             from 'electron';
 
 // Configurations
 import { appConfig }        from './lib/conf';
@@ -30,6 +30,12 @@ import './ipc/app';
 // Read the application config.
 // tslint:disable-next-line:no-console
 // console.log('app config: ' + JSON.stringify(appConfig, null, 2));
+
+
+if (app.isPackaged) {
+    // Removing the menu bar from the window.
+    Menu.setApplicationMenu(null);
+}
 
 
 // App lifecycle events.
@@ -87,12 +93,6 @@ app.on('ready', function() {
 
     protocol.interceptFileProtocol('file', (req, callback) => {
         const filePath = normalizePath(decodeURIComponent(new url.URL(req.url).pathname), false);
-        if (filePath === embedHtml) {
-            // Complement for PDF plugin problem.
-            // TODO: Remove if plugin is fixed.
-            //       https://github.com/electron/electron/issues/12337
-            shell.openExternal(previewPdfUnpackedPath);
-        }
         callback(filePath);
     });
 
@@ -106,7 +106,7 @@ app.on('ready', function() {
             console.error(e);
             // tslint:disable-next-line:no-console
             console.error(req.url);
-            callback();
+            callback({ statusCode: 500 });
         }
     });
 

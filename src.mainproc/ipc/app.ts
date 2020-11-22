@@ -19,7 +19,6 @@ import { ipcMain,
 import { contentsRootDir }  from '../settings';
 import { curDir,
          thisDirName,
-         getLastSrcPath,
          setLastSrcPath }   from '../lib/paths';
 import   commandRunner      from '../lib/cmdrunner';
 import { createMainWindow } from '../windows/MainWindow';
@@ -292,14 +291,24 @@ async function renderByMenneu(
         process.chdir(curDir);
     }
 
-    const outPath = exportPath.length === 0 ?
-        path.normalize(path.join(thisDirName, `./${contentsRootDir}/out/preview.${options.outputFormat}`)) :
-        path.normalize(path.join(...exportPath));
-    await writeFileAsync(outPath, buf);
+    if (options.outputFormat.toLowerCase() === 'pdf') {
+        const pdfDir = path.normalize(path.join(thisDirName, `./${contentsRootDir}`));
+        const embedHtmlPath = path.join(pdfDir, 'embed.html');
 
-    return options.outputFormat.toLowerCase() === 'pdf' ?
-        'embed.html' :
-        'out/preview.' + options.outputFormat;
+        const outPath = exportPath.length === 0 ?
+            path.normalize(path.join(pdfDir, `./out/preview.pdf`)) :
+            path.normalize(path.join(...exportPath));
+        await writeFileAsync(outPath, buf);
+
+        return embedHtmlPath;
+    } else {
+        const outPath = exportPath.length === 0 ?
+            path.normalize(path.join(thisDirName, `./${contentsRootDir}/out/preview.${options.outputFormat}`)) :
+            path.normalize(path.join(...exportPath));
+        await writeFileAsync(outPath, buf);
+
+        return 'out/preview.' + options.outputFormat;
+    }
 }
 
 

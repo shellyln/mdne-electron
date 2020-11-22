@@ -7,7 +7,6 @@ import * as path            from 'path';
 import * as electron        from 'electron';
 import { app,
          BrowserWindow,
-         Menu,
          dialog,
          shell }            from 'electron';
 import { contentsRootDir }  from '../settings';
@@ -27,6 +26,7 @@ export function createMainWindow() {
     let mainWindow: BrowserWindow | null = new BrowserWindow({
         webPreferences: {
             nodeIntegration: false,
+            contextIsolation: false,
             preload: path.join(app.getAppPath(), 'src.preload/preload.js'),
 
             // TODO: enable PDF plugin
@@ -49,7 +49,7 @@ export function createMainWindow() {
             callback({
                 responseHeaders: {
                     ...details.responseHeaders,
-                    'Content-Security-Policy': ['default-src \'none\''],
+                    // 'Content-Security-Policy': ['default-src \'none\''],  // TODO: Set CSP (working with PDF Viewer)
                 },
             });
         });
@@ -120,12 +120,6 @@ export function createMainWindow() {
         //     shell.openExternal(url);
         // }
     });
-
-    if (app.isPackaged) {
-        Menu.setApplicationMenu(null); // electron 7.x.x
-        // mainWindow.removeMenu();    // electron 6.x.x
-        // mainWindow.setMenu(null);   // electron 5.x.x
-    }
 
     (mainWindow as any).editorIsDirty = false;
 
