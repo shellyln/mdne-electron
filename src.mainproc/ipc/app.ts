@@ -296,13 +296,14 @@ async function renderByMenneu(
     }
 
     if (options.outputFormat.toLowerCase() === 'pdf') {
-        const pdfDir = `${os.tmpdir()}/mdne-electron/pdf`;
-        await mkdirAsync(path.join(pdfDir, 'out'), {recursive: true});
+        // const pdfDir = `${os.tmpdir()}/mdne-electron/pdf`;
+        // await mkdirAsync(path.join(pdfDir, 'out'), {recursive: true});
+        const pdfDir = path.normalize(path.join(thisDirName, `./${contentsRootDir}`));
 
         const embedHtmlPath = path.join(pdfDir, 'embed.html');
-        await copyFileAsync(
-            path.normalize(path.join(thisDirName, `./${contentsRootDir}/embed.html`)),
-            embedHtmlPath);
+        // await copyFileAsync(
+        //     path.normalize(path.join(thisDirName, `./${contentsRootDir}/embed.html`)),
+        //     embedHtmlPath);
 
         const outPath = exportPath.length === 0 ?
             path.normalize(path.join(pdfDir, `./out/preview.pdf`)) :

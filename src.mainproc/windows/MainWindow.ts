@@ -50,7 +50,7 @@ export function createMainWindow() {
             callback({
                 responseHeaders: {
                     ...details.responseHeaders,
-                    'Content-Security-Policy': ['default-src \'none\''],
+                    // 'Content-Security-Policy': ['default-src \'none\''],  // TODO: Set CSP (working with PDF Viewer)
                 },
             });
         });
