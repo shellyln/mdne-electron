@@ -1,6 +1,6 @@
 {
   "name": "mdne-electron",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "private": false,
   "description": "Markdown Neo Edit for Electron - A simple markdown and code editor powered by Markdown-it, Ace and Electron.",
   "keywords": [
