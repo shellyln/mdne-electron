@@ -43,13 +43,8 @@
     "import-contents:3": "rm ./contents/assets/script/backend-emu.js"
   },
   "dependencies": {
-    "bufferutil": "^4.0.2",
     "carlo": "^0.9.46",
-    "liyad": "^0.6.0",
-    "menneu": "^0.4.0",
-    "puppeteer-core": "^5.5.0",
-    "red-agate": "^0.5.0",
-    "utf-8-validate": "^5.0.3"
+    "puppeteer-core": "^5.5.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.7",
@@ -58,17 +53,22 @@
     "@types/node": "^14.14.9",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.2.1",
+    "bufferutil": "^4.0.2",
     "electron": "^11.0.2",
     "electron-builder": "^22.9.1",
     "eslint": "^7.14.0",
+    "liyad": "^0.6.0",
+    "menneu": "^0.4.0",
     "node-sass": "^5.0.0",
     "npm-run-all": "^4.1.5",
     "raw-loader": "^4.0.2",
+    "red-agate": "^0.5.0",
     "sass-loader": "^10.1.0",
     "source-map-loader": "^1.1.2",
     "ts-loader": "^8.0.11",
     "tslint": "^6.1.3",
     "typescript": "^4.1.2",
+    "utf-8-validate": "^5.0.3",
     "webpack": "^5.6.0",
     "webpack-cli": "^4.2.0"
   },

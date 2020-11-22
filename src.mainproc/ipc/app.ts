@@ -7,7 +7,6 @@ import   child_process      from 'child_process';
 import   fs                 from 'fs';
 import   path               from 'path';
 import   util               from 'util';
-import   os                 from 'os';
 import { HtmlRenderer }     from 'red-agate/modules/red-agate/renderer';
 import   requireDynamic     from 'red-agate-util/modules/runtime/require-dynamic';
 import { render,
@@ -20,7 +19,6 @@ import { ipcMain,
 import { contentsRootDir }  from '../settings';
 import { curDir,
          thisDirName,
-         getLastSrcPath,
          setLastSrcPath }   from '../lib/paths';
 import   commandRunner      from '../lib/cmdrunner';
 import { createMainWindow } from '../windows/MainWindow';
@@ -31,8 +29,6 @@ const readFileAsync  = util.promisify(fs.readFile);
 const writeFileAsync = util.promisify(fs.writeFile);
 const readdirAsync   = util.promisify(fs.readdir);
 const statAsync      = util.promisify(fs.stat);
-const mkdirAsync     = util.promisify(fs.mkdir);
-const copyFileAsync  = util.promisify(fs.copyFile);
 
 
 
@@ -296,14 +292,8 @@ async function renderByMenneu(
     }
 
     if (options.outputFormat.toLowerCase() === 'pdf') {
-        // const pdfDir = `${os.tmpdir()}/mdne-electron/pdf`;
-        // await mkdirAsync(path.join(pdfDir, 'out'), {recursive: true});
         const pdfDir = path.normalize(path.join(thisDirName, `./${contentsRootDir}`));
-
         const embedHtmlPath = path.join(pdfDir, 'embed.html');
-        // await copyFileAsync(
-        //     path.normalize(path.join(thisDirName, `./${contentsRootDir}/embed.html`)),
-        //     embedHtmlPath);
 
         const outPath = exportPath.length === 0 ?
             path.normalize(path.join(pdfDir, `./out/preview.pdf`)) :
