@@ -34,7 +34,20 @@ const mkdirAsync     = util.promisify(fs.mkdir);
 const copyFileAsync  = util.promisify(fs.copyFile);
 
 
-const carloOptions = {};
+const carloOptions: any = {};
+if (process.env.MDNE_CHROME_CHANNEL_CHROMIUM &&
+    String(process.env.MDNE_CHROME_CHANNEL_CHROMIUM).toLowerCase() === 'true') {
+
+    // TODO: BUG: Error: Protocol error (IO.read): Invalid parameters handle: string value expected
+    //                   mdne-electron/node_modules/puppeteer-core/lib/cjs/puppeteer/common/Connection.js:208:63
+
+    carloOptions.channel = 'chromium';
+
+    const tmpDir = `${os.tmpdir()}/mdne-electron`;
+    carloOptions.localDataDir = path.normalize(path.join(tmpDir, '.local-chromium'));
+    fs.mkdirSync(carloOptions.localDataDir, {recursive: true});
+}
+
 
 // NOTE: dropped file is passed by process.argv[1] on   packed environment
 // NOTE: dropped file is passed by process.argv[2] on unpacked environment

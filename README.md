@@ -52,9 +52,6 @@
 * [Optional] Google Chrome (latest)
   * for previewing as or exporting as PDF
 
-## Limitation
-
-* The `Preview as PDF` feature is broken by Electron issue [#12337](https://github.com/electron/electron/issues/12337)
 
 ----
 
