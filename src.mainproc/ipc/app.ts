@@ -3,26 +3,27 @@
 // https://github.com/shellyln
 
 
-import   child_process      from 'child_process';
-import   fs                 from 'fs';
-import   path               from 'path';
-import   util               from 'util';
-import   os                 from 'os';
-import { HtmlRenderer }     from 'red-agate/modules/red-agate/renderer';
-import   requireDynamic     from 'red-agate-util/modules/runtime/require-dynamic';
+import   child_process         from 'child_process';
+import   fs                    from 'fs';
+import   path                  from 'path';
+import   util                  from 'util';
+import   os                    from 'os';
+import { HtmlRenderer }        from 'red-agate/modules/red-agate/renderer';
+import   requireDynamic        from 'red-agate-util/modules/runtime/require-dynamic';
 import { render,
-         getAppEnv }        from 'menneu/modules';
+         getAppEnv }           from 'menneu/modules';
 import { ipcMain,
          dialog,
          BrowserWindow,
          WebContents,
-         app }              from 'electron';
-import { contentsRootDir }  from '../settings';
+         app }                 from 'electron';
+import { PUPPETEER_REVISIONS } from 'puppeteer-core/lib/esm/puppeteer/revisions';
+import { contentsRootDir }     from '../settings';
 import { curDir,
          thisDirName,
-         setLastSrcPath }   from '../lib/paths';
-import   commandRunner      from '../lib/cmdrunner';
-import { createMainWindow } from '../windows/MainWindow';
+         setLastSrcPath }      from '../lib/paths';
+import   commandRunner         from '../lib/cmdrunner';
+import { createMainWindow }    from '../windows/MainWindow';
 
 // tslint:disable-next-line:no-var-requires
 const findChrome     = require('carlo/lib/find_chrome');
@@ -35,17 +36,21 @@ const copyFileAsync  = util.promisify(fs.copyFile);
 
 
 const carloOptions: any = {};
-if (process.env.MDNE_CHROME_CHANNEL_CHROMIUM &&
-    String(process.env.MDNE_CHROME_CHANNEL_CHROMIUM).toLowerCase() === 'true') {
 
-    // TODO: BUG: Error: Protocol error (IO.read): Invalid parameters handle: string value expected
-    //                   mdne-electron/node_modules/puppeteer-core/lib/cjs/puppeteer/common/Connection.js:208:63
 
-    carloOptions.channel = 'chromium';
+function setLocalChromium() {
+    carloOptions.channel = [`r${PUPPETEER_REVISIONS.chromium}`];
 
     const tmpDir = `${os.tmpdir()}/mdne-electron`;
     carloOptions.localDataDir = path.normalize(path.join(tmpDir, '.local-chromium'));
     fs.mkdirSync(carloOptions.localDataDir, {recursive: true});
+}
+
+
+if (process.env.MDNE_CHROME_CHANNEL_CHROMIUM &&
+    String(process.env.MDNE_CHROME_CHANNEL_CHROMIUM).toLowerCase() === 'true') {
+
+    setLocalChromium();
 }
 
 
@@ -64,6 +69,17 @@ HtmlRenderer.rendererPackageName = 'puppeteer-core';
         // Chrome browser is not available.
         // tslint:disable-next-line:no-console
         console.error(e);
+
+        // retry
+        try {
+            setLocalChromium();
+            HtmlRenderer.launchOptions = {
+                executablePath: (await findChrome(carloOptions)).executablePath,
+            };
+        } catch (e2) {
+            // tslint:disable-next-line:no-console
+            console.error(e2);
+        }
     }
 })();
 
