@@ -28,10 +28,7 @@ export function createMainWindow() {
             nodeIntegration: false,
             contextIsolation: false,
             preload: path.join(app.getAppPath(), 'src.preload/preload.js'),
-
-            // TODO: enable PDF plugin
-            //       https://github.com/electron/electron/issues/12337
-            plugins: true,
+            plugins: true, // enable PDF plugin
         },
         width: Math.max(1200, width / 2),
         height: Math.max(600, height - 20),
@@ -113,12 +110,7 @@ export function createMainWindow() {
     });
 
     mainWindow.webContents.on('will-navigate', (event: any, url: string) => {
-        // tslint:disable-next-line:no-console
-        // console.log(url);
-        // event.preventDefault();
-        // if (url.match(/^https?:\/\//)) {
-        //     shell.openExternal(url);
-        // }
+        event.preventDefault();
     });
 
     (mainWindow as any).editorIsDirty = false;
