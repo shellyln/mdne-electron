@@ -48,7 +48,7 @@ export function createMainWindow() {
                 'Content-Security-Policy': [
                     `default-src chrome: 'self';` +
                     `script-src chrome: 'self'${app.isPackaged ? '' : ` devtools: 'unsafe-eval'`};` +
-                    `style-src chrome: https: data: 'self'${app.isPackaged ? '' : ` devtools: 'unsafe-inline'`};` +
+                    `style-src chrome: https: http: data: 'self' 'unsafe-inline'${app.isPackaged ? '' : ` devtools:`};` +
                     `img-src chrome: https: http: data: 'self';` +
                     `media-src chrome: https: http: data: 'self';` +
                     `object-src file:;` +
