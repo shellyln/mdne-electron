@@ -41,27 +41,23 @@ export function createMainWindow() {
 
     // CSP is not work while the location scheme is 'file'.
     // And when if navigated to http/https, CSP is to be enabled.
-    if (app.isPackaged) {
-        mainWindow.webContents.session.webRequest.onHeadersReceived((details: any, callback: any) => {
-            callback({
-                responseHeaders: {
-                    ...details.responseHeaders,
-                    // 'Content-Security-Policy': ['default-src \'none\''],  // TODO: Set CSP (working with PDF Viewer)
-                },
-            });
+    mainWindow.webContents.session.webRequest.onHeadersReceived((details: any, callback: any) => {
+        callback({
+            responseHeaders: {
+                ...details.responseHeaders,
+                'Content-Security-Policy': [
+                    `default-src chrome: 'self';` +
+                    `script-src chrome: 'self'${app.isPackaged ? '' : ` devtools: 'unsafe-eval'`};` +
+                    `style-src chrome: https: data: 'self'${app.isPackaged ? '' : ` devtools: 'unsafe-inline'`};` +
+                    `img-src chrome: https: http: data: 'self';` +
+                    `media-src chrome: https: http: data: 'self';` +
+                    `object-src file:;` +
+                    `frame-ancestors file:;` +
+                    `frame-src file:`,
+                ],
+            },
         });
-    } else {
-        // NOTE: Remove CSP to use devtools.
-        //   Refused to load the script 'devtools://devtools/bundled/shell.js'
-        //   because it violates the following Content Security Policy directive: "default-src 'none'.
-        mainWindow.webContents.session.webRequest.onHeadersReceived((details: any, callback: any) => {
-            callback({
-                responseHeaders: {
-                    ...details.responseHeaders,
-                },
-            });
-        });
-    }
+    });
 
     mainWindow.webContents.session.setPermissionRequestHandler((webContents, permission, callback) => {
         // const url = webContents.getURL();
