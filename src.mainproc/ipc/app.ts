@@ -3,27 +3,28 @@
 // https://github.com/shellyln
 
 
-import   child_process         from 'child_process';
-import   fs                    from 'fs';
-import   path                  from 'path';
-import   util                  from 'util';
-import   os                    from 'os';
-import { HtmlRenderer }        from 'red-agate/modules/red-agate/renderer';
-import   requireDynamic        from 'red-agate-util/modules/runtime/require-dynamic';
+import   child_process             from 'child_process';
+import   fs                        from 'fs';
+import   path                      from 'path';
+import   util                      from 'util';
+import   os                        from 'os';
+import { HtmlRenderer }            from 'red-agate/modules/red-agate/renderer';
+import   requireDynamic            from 'red-agate-util/modules/runtime/require-dynamic';
 import { render,
-         getAppEnv }           from 'menneu/modules';
+         getAppEnv }               from 'menneu/modules';
 import { ipcMain,
          dialog,
          BrowserWindow,
          WebContents,
-         app }                 from 'electron';
-import { PUPPETEER_REVISIONS } from 'puppeteer-core/lib/esm/puppeteer/revisions';
-import { contentsRootDir }     from '../settings';
+         app }                     from 'electron';
+import { PUPPETEER_REVISIONS }     from 'puppeteer-core/lib/esm/puppeteer/revisions';
+import { contentsRootDir }         from '../settings';
 import { curDir,
          thisDirName,
-         setLastSrcPath }      from '../lib/paths';
-import   commandRunner         from '../lib/cmdrunner';
-import { createMainWindow }    from '../windows/MainWindow';
+         setLastSrcPath }          from '../lib/paths';
+import   commandRunner             from '../lib/cmdrunner';
+import { additionalContentStyles } from '../lib/styles';
+import { createMainWindow }        from '../windows/MainWindow';
 
 // tslint:disable-next-line:no-var-requires
 const findChrome     = require('carlo/lib/find_chrome');
@@ -346,6 +347,9 @@ async function renderByMenneu(
         const outPath = exportPath.length === 0 ?
             path.normalize(path.join(tmpDir, `./out/preview.${options.outputFormat}`)) :
             path.normalize(path.join(...exportPath));
+        if (options.outputFormat.toLowerCase() === 'html' && outPath.startsWith(path.normalize(path.join(tmpDir,'./out')))) {
+            buf = Buffer.concat([buf, Buffer.from(additionalContentStyles)]);
+        }
         await writeFileAsync(outPath, buf);
 
         return outPath;
