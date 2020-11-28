@@ -59,7 +59,7 @@ div.switch label {
 }
 
 .OutputIframe {
-    background-color: #272822;
+    background-color: white;
     flex-grow: 2;
     height: calc(100vh - 70px);
     min-height: 300px;
