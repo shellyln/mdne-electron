@@ -30,8 +30,8 @@ export function createMainWindow() {
             preload: path.join(app.getAppPath(), 'src.preload/preload.js'),
             plugins: true, // enable PDF plugin
         },
-        width: Math.max(1200, width / 2),
-        height: Math.max(600, height - 20),
+        width: Math.max(600, Math.ceil(width * 0.667)),
+        height: Math.max(400, Math.ceil(height * 0.667)),
         icon: path.join(app.getAppPath(), 'icons/app/256x256.png'),
     });
     registerWindow(mainWindow, mainWindow);
