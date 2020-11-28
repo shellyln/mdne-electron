@@ -1,19 +1,24 @@
 
-define("ace/mode/lisp_highlight_rules", ["require", "exports", "module", "ace/lib/oop", "ace/mode/text_highlight_rules"], function(e, t, n) {
+
+ace.define("ace/mode/lisp_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
     "use strict";
-    var r = e("../lib/oop")
-      , i = e("./text_highlight_rules").TextHighlightRules
-      , s = function() {
-        var e = "$let|$local|$global|$capture|$if|$if-null|$cond|$while|$do-while|$until|$do-until|$for|$repeat|$try|$raise|$=if|$=for"
-          , t = "$eq|$ne|$neq|$and|$or|===|==|!==|!=|<=|>=|<|>|+|-|*|/|%"
-          , n = "null|nil|$data"
-          , r = "$cons|$car|$cdr|$self|$setq|$setf|$set|$get|$quote|$eval|$list|$concat|$length|$range|$map"
-          , i = this.createKeywordMapper({
-            "keyword.control": e,
-            "keyword.operator": t,
-            "constant.language": n,
-            "support.function": r
-        }, "identifier", !0);
+
+    var oop = require("../lib/oop");
+    var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
+
+    var LispHighlightRules = function() {
+        var keywordControl = "$let|$local|$global|$capture|$if|$if-null|$cond|$while|$do-while|$until|$do-until|$for|$repeat|$try|$raise|$=if|$=for";
+        var keywordOperator = "$eq|$ne|$neq|$and|$or|===|==|!==|!=|<=|>=|<|>|+|-|*|/|%";
+        var constantLanguage = "null|nil|$data";
+        var supportFunctions = "$cons|$car|$cdr|$self|$setq|$setf|$set|$get|$quote|$eval|$list|$concat|$length|$range|$map";
+
+        var keywordMapper = this.createKeywordMapper({
+            "keyword.control": keywordControl,
+            "keyword.operator": keywordOperator,
+            "constant.language": constantLanguage,
+            "support.function": supportFunctions
+        }, "identifier", true);
+
         this.$rules = {
             start: [{
                 token: "comment",
@@ -34,7 +39,7 @@ define("ace/mode/lisp_highlight_rules", ["require", "exports", "module", "ace/li
                 token: "constant.numeric",
                 regex: "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?(?:L|l|UL|ul|u|U|F|f|ll|LL|ull|ULL)?\\b"
             }, {
-                token: i,
+                token: keywordMapper,
                 regex: "[a-zA-Z_\\$\\-\\=\\<\\>\\!][a-zA-Z0-9_\\$\\-\\=\\<\\>\\!]*\\b"
             }, {
                 token: "string",
@@ -56,33 +61,43 @@ define("ace/mode/lisp_highlight_rules", ["require", "exports", "module", "ace/li
                 regex: '"|$',
                 next: "start"
             }]
-        }
+        };
     };
-    r.inherits(s, i),
-    t.LispHighlightRules = s
-}),
-define("ace/mode/lisp", ["require", "exports", "module", "ace/lib/oop", "ace/mode/text", "ace/mode/lisp_highlight_rules"], function(e, t, n) {
-    "use strict";
-    var r = e("../lib/oop")
-      , i = e("./text").Mode
-      , s = e("./lisp_highlight_rules").LispHighlightRules
-      , o = function() {
-        this.HighlightRules = s,
-        this.$behaviour = this.$defaultBehaviour
-    };
-    r.inherits(o, i),
-    function() {
-        this.lineCommentStart = ";",
-        this.$id = "ace/mode/lisp"
-    }
-    .call(o.prototype),
-    t.Mode = o
+
+    oop.inherits(LispHighlightRules, TextHighlightRules);
+
+    exports.LispHighlightRules = LispHighlightRules;
 });
+
+
+ace.define("ace/mode/lisp",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/lisp_highlight_rules"], function(require, exports, module) {
+    "use strict";
+
+    var oop = require("../lib/oop");
+    var TextMode = require("./text").Mode;
+    var LispHighlightRules = require("./lisp_highlight_rules").LispHighlightRules;
+
+    var Mode = function() {
+        this.HighlightRules = LispHighlightRules;
+        this.$behaviour = this.$defaultBehaviour;
+    };
+    oop.inherits(Mode, TextMode);
+
+    (function() {
+        
+        this.lineCommentStart = ";";
+        
+        this.$id = "ace/mode/lisp";
+    }).call(Mode.prototype);
+
+    exports.Mode = Mode;
+});
+
+
 (function() {
-    window.require(["ace/mode/lisp"], function(m) {
+    ace.require(["ace/mode/lisp"], function(m) {
         if (typeof module == "object" && typeof exports == "object" && module) {
             module.exports = m;
         }
     });
-}
-)();
+})();
