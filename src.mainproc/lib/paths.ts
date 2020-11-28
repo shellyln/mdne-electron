@@ -2,6 +2,7 @@
 // license: ISC
 // https://github.com/shellyln
 
+
 import   path              from 'path';
 import { app }             from 'electron';
 import { contentsRootDir } from '../settings';
