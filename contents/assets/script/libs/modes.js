@@ -69,9 +69,14 @@ export function getInputFormat(path) {
         return 'sh';
     case '.dockerfile':
         return 'dockerfile';
+    case '.makefile':
+        return 'makefile';
     default:
         if (path.toLowerCase().endsWith('dockerfile')) {
             return 'dockerfile';
+        }
+        if (path.toLowerCase().endsWith('makefile')) {
+            return 'makefile';
         }
         return 'text';
     }
@@ -160,6 +165,8 @@ export function getAceEditorMode(inputFormat) {
         return 'ace/mode/sh';
     case 'dockerfile':
         return 'ace/mode/dockerfile';
+    case 'makefile':
+        return 'ace/mode/makefile';
     case 'text':
         return 'ace/mode/text';
     default:

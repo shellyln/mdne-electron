@@ -43,6 +43,7 @@ export function getSuggests() {
         'mode r': null,
         'mode sh': null,
         'mode dockerfile': null,
+        'mode makefile': null,
         'mode text': null,
     };
 }
