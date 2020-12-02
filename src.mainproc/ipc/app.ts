@@ -20,6 +20,8 @@ import { PUPPETEER_REVISIONS }     from 'puppeteer-core/lib/esm/puppeteer/revisi
 import { contentsRootDir }         from '../settings';
 import { curDir,
          thisDirName,
+         getStartupFilePath,
+         setStartupFilePath,
          setLastSrcPath,
          tmpDir,
          tmpOutDir }               from '../lib/paths';
@@ -53,11 +55,6 @@ if (process.env.MDNE_CHROME_CHANNEL_CHROMIUM &&
 
     setLocalChromium();
 }
-
-
-// NOTE: dropped file is passed by process.argv[1] on   packed environment
-// NOTE: dropped file is passed by process.argv[2] on unpacked environment
-let startupFile: string | undefined = process.argv[app.isPackaged ? 1 : 2];
 
 
 HtmlRenderer.rendererPackageName = 'puppeteer-core';
@@ -491,9 +488,10 @@ function getBaseName(filePath: string) {
 
 ipc('app:editor:getStartupFile', arg => getStartupFile());
 async function getStartupFile() {
-    if (startupFile) {
-        const p = path.resolve(startupFile);
-        startupFile = void 0;
+    const startupPath = getStartupFilePath();
+    if (startupPath) {
+        const p = path.resolve(startupPath);
+        setStartupFilePath(void 0);
         const text = await readFileAsync(p, { encoding: 'utf8' });
         return {
             path: p,

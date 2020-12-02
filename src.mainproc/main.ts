@@ -15,7 +15,8 @@ import { app,
 // Configurations
 import { appConfig }        from './lib/conf';
 import { contentsRootDir }  from './settings';
-import { getLastSrcPath,
+import { setStartupFilePath,
+         getLastSrcPath,
          tmpOutDir }        from './lib/paths';
 import   getContentType     from './lib/mime';
 
@@ -25,6 +26,12 @@ import { createMainWindow } from './windows/MainWindow';
 // IPC events
 import './ipc/app';
 
+
+
+const lockAcquired = app.requestSingleInstanceLock();
+if (! lockAcquired) {
+    app.quit();
+}
 
 
 // Read the application config.
@@ -43,8 +50,7 @@ if (app.isPackaged) {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-// tslint:disable-next-line:only-arrow-functions
-app.on('ready', function() {
+app.on('ready', () => {
     let contentsRoot = path.join(app.getAppPath(), contentsRootDir);
     const previewHtml = path.join(tmpOutDir, 'preview.html');
     const previewPdf = path.join(tmpOutDir, 'preview.pdf');
@@ -96,8 +102,7 @@ app.on('ready', function() {
 
 
 // Quit when all windows are closed.
-// tslint:disable-next-line:only-arrow-functions
-app.on('window-all-closed', function() {
+app.on('window-all-closed', () => {
     // On macOS it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== 'darwin') {
@@ -106,10 +111,20 @@ app.on('window-all-closed', function() {
 });
 
 
-// tslint:disable-next-line:only-arrow-functions
-app.on('activate', function() {
+app.on('activate', () => {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
+    createMainWindow();
+});
+
+
+app.on('second-instance', (event, commandLine, workingDirectory) => {
+    for (const p of commandLine.slice(1)) {
+        if (! p.startsWith('-')) {
+            setStartupFilePath(p);
+            break;
+        }
+    }
     createMainWindow();
 });
 
