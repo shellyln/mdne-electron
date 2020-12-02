@@ -42,21 +42,32 @@ export function createMainWindow() {
     // CSP is not work while the location scheme is 'file'.
     // And when if navigated to http/https, CSP is to be enabled.
     mainWindow.webContents.session.webRequest.onHeadersReceived((details: any, callback: any) => {
-        callback({
-            responseHeaders: {
-                ...details.responseHeaders,
-                'Content-Security-Policy': [
-                    `default-src chrome: 'self';` +
-                    `script-src chrome: 'self'${app.isPackaged ? '' : ` devtools: 'unsafe-eval'`};` +
-                    `style-src chrome: https: http: data: 'self' 'unsafe-inline'${app.isPackaged ? '' : ` devtools:`};` +
-                    `img-src chrome: https: http: data: 'self';` +
-                    `media-src chrome: https: http: data: 'self';` +
-                    `object-src file:;` +
-                    `frame-ancestors file:;` +
-                    `frame-src file:`,
-                ],
-            },
-        });
+        if (details.url.match(/^https?:\/\//)) {
+            callback({
+                responseHeaders: {
+                    ...details.responseHeaders,
+                    'Content-Security-Policy': [
+                        `default-src 'none';`,
+                    ],
+                },
+            });
+        } else {
+            callback({
+                responseHeaders: {
+                    ...details.responseHeaders,
+                    'Content-Security-Policy': [
+                        `default-src chrome: 'self';` +
+                        `script-src chrome: 'self'${app.isPackaged ? '' : ` devtools: 'unsafe-eval'`};` +
+                        `style-src chrome: https: http: data: 'self' 'unsafe-inline'${app.isPackaged ? '' : ` devtools:`};` +
+                        `img-src chrome: https: http: data: 'self';` +
+                        `media-src chrome: https: http: data: 'self';` +
+                        `object-src file:;` +
+                        `frame-ancestors file:;` +
+                        `frame-src file:`,
+                    ],
+                },
+            });
+        }
     });
 
     mainWindow.webContents.session.setPermissionRequestHandler((webContents, permission, callback) => {
