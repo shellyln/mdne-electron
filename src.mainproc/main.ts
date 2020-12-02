@@ -46,17 +46,11 @@ if (app.isPackaged) {
 // tslint:disable-next-line:only-arrow-functions
 app.on('ready', function() {
     let contentsRoot = path.join(app.getAppPath(), contentsRootDir);
-    let assetsRoot = path.join(contentsRoot, 'assets');
-    let outRoot = path.join(contentsRoot, 'out');
-    let embedHtml = path.join(contentsRoot, 'embed.html');
     const previewHtml = path.join(tmpOutDir, 'preview.html');
     const previewPdf = path.join(tmpOutDir, 'preview.pdf');
 
     if (process.platform === 'win32') {
         contentsRoot = contentsRoot.replace(/\\/g, '/');
-        assetsRoot = assetsRoot.replace(/\\/g, '/');
-        outRoot = outRoot.replace(/\\/g, '/');
-        embedHtml = embedHtml.replace(/\\/g, '/');
     }
 
     const normalizePath = (filePath: string, isAppScheme: boolean) => {
