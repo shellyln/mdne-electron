@@ -3,6 +3,7 @@
 // https://github.com/shellyln
 
 
+import   os                from 'os';
 import   path              from 'path';
 import { app }             from 'electron';
 import { contentsRootDir } from '../settings';
@@ -28,6 +29,9 @@ export function resetLastSrcPath() {
     lastSrcDir = path.join(thisDirName, contentsRootDir);
     return lastSrcDir;
 }
+
+export const tmpDir = path.normalize(path.join(os.tmpdir(), 'mdne-electron'));
+export const tmpOutDir = path.normalize(path.join(tmpDir, 'out'));
 
 // NOTE: BUG: electron 7 don't look automatically dynamic `/app.asar.unpacked/*` contents?
 export const toUnpackedPath = (p: string) => app.isPackaged ?

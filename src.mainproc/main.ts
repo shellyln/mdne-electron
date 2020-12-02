@@ -16,7 +16,7 @@ import { app,
 import { appConfig }        from './lib/conf';
 import { contentsRootDir }  from './settings';
 import { getLastSrcPath,
-         toUnpackedPath }   from './lib/paths';
+         tmpOutDir }        from './lib/paths';
 import   getContentType     from './lib/mime';
 
 // Window
@@ -49,20 +49,15 @@ app.on('ready', function() {
     let assetsRoot = path.join(contentsRoot, 'assets');
     let outRoot = path.join(contentsRoot, 'out');
     let embedHtml = path.join(contentsRoot, 'embed.html');
-    let previewHtml = path.join(outRoot, 'preview.html');
-    let previewPdf = path.join(outRoot, 'preview.pdf');
+    const previewHtml = path.join(tmpOutDir, 'preview.html');
+    const previewPdf = path.join(tmpOutDir, 'preview.pdf');
 
     if (process.platform === 'win32') {
         contentsRoot = contentsRoot.replace(/\\/g, '/');
         assetsRoot = assetsRoot.replace(/\\/g, '/');
         outRoot = outRoot.replace(/\\/g, '/');
         embedHtml = embedHtml.replace(/\\/g, '/');
-        previewHtml = previewHtml.replace(/\\/g, '/');
-        previewPdf = previewPdf.replace(/\\/g, '/');
     }
-
-    // NOTE: BUG: electron 7 don't look automatically dynamic `/app.asar.unpacked/*` contents?
-    const previewPdfUnpackedPath = toUnpackedPath(previewPdf);
 
     const normalizePath = (filePath: string, isAppScheme: boolean) => {
         if (!isAppScheme && process.platform === 'win32') {
@@ -70,21 +65,13 @@ app.on('ready', function() {
             if (filePath.match(/^\/[A-Za-z]:/)) {
                 filePath = filePath.slice(1);
             }
-            if (filePath === previewHtml || filePath === previewPdf) {
-                filePath = toUnpackedPath(filePath);
-            } else if (filePath.startsWith(outRoot)) {
-                filePath = path.join(getLastSrcPath(), filePath.slice(outRoot.length));
-            }
-        } else {
-            if (isAppScheme) {
-                filePath = path.join(contentsRoot, filePath.slice(1));
-            } else if (filePath === previewHtml || filePath === previewPdf) {
-                // nothing to do
-            } else if (filePath.startsWith(outRoot)) {
-                filePath = path.join(getLastSrcPath(), filePath.slice(outRoot.length));
-            }
+        } else if (isAppScheme) {
+            filePath = path.join(contentsRoot, filePath.slice(1));
         }
         filePath = path.normalize(filePath);
+        if (filePath.startsWith(tmpOutDir) && filePath !== previewHtml && filePath !== previewPdf) {
+            filePath = path.join(getLastSrcPath(), filePath.slice(tmpOutDir.length));
+        }
         if (process.platform === 'win32') {
             filePath = filePath.replace(/\\/g, '/');
         }
