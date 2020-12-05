@@ -26,8 +26,8 @@ export function createMainWindow() {
     let mainWindow: BrowserWindow | null = new BrowserWindow({
         webPreferences: {
             nodeIntegration: false,
-            contextIsolation: false,
-            preload: path.join(app.getAppPath(), 'src.preload/preload.js'),
+            contextIsolation: true,
+            preload: path.join(app.getAppPath(), 'src.preload/preload-isolated.js'),
             plugins: true, // enable PDF plugin
         },
         width: Math.max(600, Math.ceil(width * 0.667)),
