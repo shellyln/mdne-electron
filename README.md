@@ -128,8 +128,8 @@ Windows Registry Editor Version 5.00
 
 [HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\DWM]
 "ColorPrevalence"=dword:00000001
-"AccentColor"=dword:00202124
-"AccentColorInactive"=dword:003c4043
+"AccentColor"=dword:00242120
+"AccentColorInactive"=dword:0043403c
 ```
 
 ---
