@@ -38,11 +38,14 @@ export default class App extends React.Component {
         this.state.currentAceId = 'editor';
         this.state.splitterMoving = false;
         this.state.darkThemePreview = false;
+        this.state.counter = 0;
 
         this.aceFontSize = 14;
         this.scheduleRerenderPreview = false;
         this.savedEditorStyleWidth = null;
         this.savedPreviewScrollY = 0;
+
+        AppState.invalidate = () => this.setState({counter: this.state.counter + 1});
 
         window.onbeforeunload = (ev) => {
             // TODO: check all Ace editors
@@ -139,6 +142,8 @@ export default class App extends React.Component {
             editor.setValue('');
             editor.clearSelection();
             editor.session.getUndoManager().markClean();
+
+            this.setState({counter: this.state.counter + 1});
         };
 
         getStartupFile()
@@ -156,6 +161,8 @@ export default class App extends React.Component {
                 editor.setValue(file.text);
                 editor.clearSelection();
                 editor.session.getUndoManager().markClean();
+
+                this.setState({counter: this.state.counter + 1});
             } else {
                 setEditorNewFile();
                 this.openFileOpenDialog();
@@ -329,6 +336,8 @@ export default class App extends React.Component {
         editor.session.getUndoManager().markClean();
         notifyEditorDirty(false);
         updateAppIndicatorBar();
+
+        this.setState({counter: this.state.counter + 1});
     }
 
     // eslint-disable-next-line no-unused-vars
@@ -457,6 +466,7 @@ export default class App extends React.Component {
             }
             notifyEditorDirty(true);
             updateAppIndicatorBar();
+            // NOTE: Don't update state!
         }
 
         if (!this.state.stretched && this.state.syncPreview && !this.state.isPdf) {
@@ -708,6 +718,7 @@ export default class App extends React.Component {
                                    ${this.state.splitterMoving ? "" : " collapsed"}) ) ))
                 (iframe (@ (ref "root")
                            (src "empty.html")
+                           (style (background-color ${this.state.darkThemePreview && AppState.inputFormat === 'md' ? '#1b1f23' : 'white'}))
                            ; (sandbox "")
                            (className ($concat "OutputIframe"
                                       ${this.state.stretched || this.state.splitterMoving ? " collapsed" : ""}) ) ))
