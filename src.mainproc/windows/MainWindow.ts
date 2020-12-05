@@ -33,6 +33,7 @@ export function createMainWindow() {
         width: Math.max(600, Math.ceil(width * 0.667)),
         height: Math.max(400, Math.ceil(height * 0.667)),
         icon: path.join(app.getAppPath(), 'icons/app/256x256.png'),
+        backgroundColor: '#000',
     });
     registerWindow(mainWindow, mainWindow);
 
