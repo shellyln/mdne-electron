@@ -122,7 +122,8 @@ npm run lint
 ## Change window title bar color (Windows)
 
 * DWM.reg
-```
+
+```reg
 Windows Registry Editor Version 5.00
 
 [HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\DWM]
