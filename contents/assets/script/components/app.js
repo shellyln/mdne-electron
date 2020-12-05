@@ -229,6 +229,12 @@ export default class App extends React.Component {
             this.refs.editorPlaceholder.style.width = null;
         }
         document.activeElement.blur();
+
+        setTimeout(() => {
+            // adjust wrapping and horizontal scroll bar
+            const editor = AppState.AceEditor[this.state.currentAceId];
+            editor.resize(true);
+        }, 30);
     }
 
     // eslint-disable-next-line no-unused-vars
@@ -269,48 +275,56 @@ export default class App extends React.Component {
             // eslint-disable-next-line no-console
             console.error(`Preview of ${AppState.inputFormat} format is not supported.`);
             this.refs.root.contentWindow.location.replace('error.html');
-        } else if (this.state.isPdf) {
-            start(editor.getValue(), {
-                inputFormat: AppState.inputFormat,
-                outputFormat: 'pdf',
-                rawInput:
-                    (AppState.inputFormat !== 'md' &&
-                     AppState.inputFormat !== 'html') ||
-                        this.state.useScripting ? false : true,
-            }, null, AppState.filePath)
-            .then(outputUrl => {
-                this.refs.root.contentWindow.location.replace(outputUrl);
-            })
-            .catch(async (e) => {
-                // eslint-disable-next-line no-console
-                console.error(e);
-                this.refs.root.contentWindow.location.replace('error.html');
-            });
         } else {
-            start(editor.getValue(), {
-                inputFormat: AppState.inputFormat,
-                outputFormat: 'html',
-                rawInput:
-                    (AppState.inputFormat !== 'md' &&
-                     AppState.inputFormat !== 'html') ||
-                        this.state.useScripting ? false : true,
-                darkTheme: this.state.darkThemePreview ? true : false,
-            }, null, AppState.filePath)
-            .then(outputUrl => {
-                this.refs.root.contentWindow.location.replace(outputUrl);
-                setTimeout(() => this.refs.root.contentWindow.scrollTo(
-                    this.refs.root.contentWindow.scrollX,
-                    Math.min(
-                        this.savedPreviewScrollY,
-                        this.refs.root.contentWindow.document.documentElement.scrollHeight,
-                    ),
-                ), 30);
-            })
-            .catch(async (e) => {
-                // eslint-disable-next-line no-console
-                console.error(e);
-                this.refs.root.contentWindow.location.replace('error.html');
-            });
+            if (this.state.isPdf) {
+                start(editor.getValue(), {
+                    inputFormat: AppState.inputFormat,
+                    outputFormat: 'pdf',
+                    rawInput:
+                        (AppState.inputFormat !== 'md' &&
+                        AppState.inputFormat !== 'html') ||
+                            this.state.useScripting ? false : true,
+                }, null, AppState.filePath)
+                .then(outputUrl => {
+                    this.refs.root.contentWindow.location.replace(outputUrl);
+                })
+                .catch(async (e) => {
+                    // eslint-disable-next-line no-console
+                    console.error(e);
+                    this.refs.root.contentWindow.location.replace('error.html');
+                });
+            } else {
+                start(editor.getValue(), {
+                    inputFormat: AppState.inputFormat,
+                    outputFormat: 'html',
+                    rawInput:
+                        (AppState.inputFormat !== 'md' &&
+                        AppState.inputFormat !== 'html') ||
+                            this.state.useScripting ? false : true,
+                    darkTheme: this.state.darkThemePreview ? true : false,
+                }, null, AppState.filePath)
+                .then(outputUrl => {
+                    this.refs.root.contentWindow.location.replace(outputUrl);
+                    setTimeout(() => this.refs.root.contentWindow.scrollTo(
+                        this.refs.root.contentWindow.scrollX,
+                        Math.min(
+                            this.savedPreviewScrollY,
+                            this.refs.root.contentWindow.document.documentElement.scrollHeight,
+                        ),
+                    ), 30);
+                })
+                .catch(async (e) => {
+                    // eslint-disable-next-line no-console
+                    console.error(e);
+                    this.refs.root.contentWindow.location.replace('error.html');
+                });
+            }
+
+            setTimeout(() => {
+                // adjust wrapping and horizontal scroll bar
+                const editor = AppState.AceEditor[this.state.currentAceId];
+                editor.resize(true);
+            }, 30);
         }
         document.activeElement.blur();
     }
@@ -592,10 +606,16 @@ export default class App extends React.Component {
             window.onpointerup = null;
             this.refs.splitter.releasePointerCapture(ev2.pointerId);
             this.setState({splitterMoving: false});
-            setTimeout(() => this.refs.root.contentWindow.scrollTo(
-                this.refs.root.contentWindow.scrollX,
-                this.savedPreviewScrollY,
-            ), 30);
+            setTimeout(() => {
+                this.refs.root.contentWindow.scrollTo(
+                    this.refs.root.contentWindow.scrollX,
+                    this.savedPreviewScrollY,
+                );
+
+                // adjust wrapping and horizontal scroll bar
+                const editor = AppState.AceEditor[this.state.currentAceId];
+                editor.resize(true);
+            }, 30);
         };
         window.onpointermove = moveHandler;
         window.onpointerup = upHandler;
