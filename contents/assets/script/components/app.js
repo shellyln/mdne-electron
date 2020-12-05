@@ -21,6 +21,11 @@ import { getSuggests as getMdSuggests,
 
 
 
+const LOCAL_STORAGE_KEY = '_mdne_app_settings__Xlnuf3Ao';
+const LOCAL_STORAGE_VERSION = 2;
+const LOCAL_STORAGE_INITIAL = `{version:${LOCAL_STORAGE_VERSION},editor:{},renderer:{}}`;
+
+
 export default class App extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -32,6 +37,7 @@ export default class App extends React.Component {
         this.state.useScripting = false;
         this.state.currentAceId = 'editor';
         this.state.splitterMoving = false;
+        this.state.darkThemePreview = false;
 
         this.aceFontSize = 14;
         this.scheduleRerenderPreview = false;
@@ -105,9 +111,13 @@ export default class App extends React.Component {
         }
 
         {
-            const appSettingsStr = window.localStorage.getItem('_mdne_app_settings__Xlnuf3Ao') || '{}';
+            const appSettingsStr = window.localStorage.getItem(LOCAL_STORAGE_KEY) || LOCAL_STORAGE_INITIAL;
+            const appSettings = JSON.parse(appSettingsStr);
             const editor = AppState.AceEditor[this.state.currentAceId];
-            editor.setOptions(JSON.parse(appSettingsStr));
+            editor.setOptions(appSettings.editor ?? {});
+            this.setState({
+                darkThemePreview: appSettings?.renderer?.darkThemePreview ?? false,
+            });
         }
 
         document.onkeyup = (ev) => {
@@ -277,6 +287,7 @@ export default class App extends React.Component {
                     (AppState.inputFormat !== 'md' &&
                      AppState.inputFormat !== 'html') ||
                         this.state.useScripting ? false : true,
+                darkTheme: this.state.darkThemePreview ? true : false,
             }, null, AppState.filePath)
             .then(outputUrl => {
                 this.refs.root.contentWindow.location.replace(outputUrl);
@@ -419,10 +430,22 @@ export default class App extends React.Component {
     // eslint-disable-next-line no-unused-vars
     handleSettingsClick(ev) {
         const editor = AppState.AceEditor[this.state.currentAceId];
-        this.refs.settingsDialog.showModal(editor.getOptions(), (settings) => {
-            editor.setOptions(settings);
-            window.localStorage.setItem('_mdne_app_settings__Xlnuf3Ao', JSON.stringify(settings));
-        });
+        const appSettingsStr = window.localStorage.getItem(LOCAL_STORAGE_KEY) || LOCAL_STORAGE_INITIAL;
+
+        this.refs.settingsDialog.showModal(
+            {
+                editor: editor.getOptions(),
+                renderer: JSON.parse(appSettingsStr).renderer ?? {},
+            },
+            (settings) => {
+                settings.version = LOCAL_STORAGE_VERSION;
+                editor.setOptions(settings.editor);
+                window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings));
+                this.setState({
+                    darkThemePreview: settings?.renderer?.darkThemePreview ?? false,
+                });
+            },
+        );
     }
 
     // eslint-disable-next-line no-unused-vars
@@ -444,7 +467,7 @@ export default class App extends React.Component {
                 this.scheduleRerenderPreview = true;
                 setTimeout(() => {
                     const editor = AppState.AceEditor[this.state.currentAceId];
-        
+
                     start(editor.getValue(), {
                         inputFormat: AppState.inputFormat,
                         outputFormat: 'html',
@@ -452,6 +475,7 @@ export default class App extends React.Component {
                             (AppState.inputFormat !== 'md' &&
                              AppState.inputFormat !== 'html') ||
                                 this.state.useScripting ? false : true,
+                        darkTheme: this.state.darkThemePreview ? true : false,
                     }, null, AppState.filePath)
                     .then(outputUrl => {
                         if (outputUrl.startsWith('data:') || outputUrl.startsWith('blob:')) {
