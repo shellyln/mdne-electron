@@ -1,12 +1,32 @@
 
 {
     const { contextBridge, ipcRenderer} = require('electron');
+    const apiKey = require('crypto').randomBytes(128).toString('hex');
+    let apiKeyCopy = apiKey;
 
     contextBridge.exposeInMainWorld(
         'mdneApi', {
-            on: (channel, listener) => ipcRenderer.on(channel, listener),
-            send: (eventName, params) => ipcRenderer.send(eventName, params),
-            ipc: (eventName, params) => {
+            getKey: () => {
+                const k = apiKeyCopy;
+                apiKeyCopy = null;
+                return k;
+            },
+            on: (key, channel, listener) => {
+                if (key !== apiKey) {
+                    throw new Error('Denied');
+                }
+                ipcRenderer.on(channel, listener);
+            },
+            send: (key, eventName, params) => {
+                if (key !== apiKey) {
+                    throw new Error('Denied');
+                }
+                ipcRenderer.send(eventName, params);
+            },
+            ipc: (key, eventName, params) => {
+                if (key !== apiKey) {
+                    throw new Error('Denied');
+                }
                 return new Promise((resolve, reject) => {
                     ipcRenderer.send(eventName, params);
                     ipcRenderer.once(eventName, (event, arg) => {
@@ -18,7 +38,10 @@
                     });
                 });
             },
-            ipcSync: (eventName, params) => {
+            ipcSync: (key, eventName, params) => {
+                if (key !== apiKey) {
+                    throw new Error('Denied');
+                }
                 return ipcRenderer.sendSync(eventName, params);
             },
         }

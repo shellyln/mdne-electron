@@ -3,6 +3,14 @@
 // https://github.com/shellyln
 
 
+import { nativeConfirmSync,
+         saveFile,
+         getStartupFile,
+         openURL,
+         openNewWindow }         from '../libs/backend-api.js';
+import { notifyEditorDirty,
+         alertWrap,
+         confirmWrap }           from '../libs/backend-wrap.js';
 import AppState,
        { updateAppIndicatorBar } from '../libs/appstate.js';
 import start                     from '../libs/start.js';
@@ -52,7 +60,7 @@ export default class App extends React.Component {
             const editor = AppState.AceEditor[this.state.currentAceId];
             const isClean = editor.session.getUndoManager().isClean();
             if (! isClean) {
-                if (window.nativeConfirmSync) {
+                if (nativeConfirmSync) {
                     // NOTE: do not show prompt here on electron environment.
                 } else {
                     ev.preventDefault(); 
@@ -185,6 +193,12 @@ export default class App extends React.Component {
         this.refs.editorPlaceholder.style.width = null;
 
         document.activeElement.blur();
+
+        setTimeout(() => {
+            // adjust wrapping and horizontal scroll bar
+            const editor = AppState.AceEditor[this.state.currentAceId];
+            editor.resize(true);
+        }, 30);
     }
 
     openFileOpenDialog() {
