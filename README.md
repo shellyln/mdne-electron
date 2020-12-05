@@ -118,7 +118,18 @@ npm run test
 npm run lint
 ```
 
+---
+## Change window title bar color (Windows)
 
+* DWM.reg
+```
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\DWM]
+"ColorPrevalence"=dword:00000001
+"AccentColor"=dword:00202124
+"AccentColorInactive"=dword:003c4043
+```
 
 ---
 
