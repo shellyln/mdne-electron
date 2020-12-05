@@ -43,11 +43,21 @@ export function createMainWindow() {
     // And when if navigated to http/https, CSP is to be enabled.
     mainWindow.webContents.session.webRequest.onHeadersReceived((details: any, callback: any) => {
         if (details.url.match(/^https?:\/\//)) {
+            const headers = {...details.responseHeaders};
+            for (const key of Object.keys(headers)) {
+                if (key.toLowerCase() === 'content-security-policy') {
+                    delete headers[key];
+                }
+                if (key.toLowerCase() === 'x-content-security-policy') {
+                    delete headers[key];
+                }
+            }
             callback({
                 responseHeaders: {
-                    ...details.responseHeaders,
-                    'Content-Security-Policy': [
-                        `default-src 'none';`,
+                    ...headers,
+                    'content-security-policy': [
+                        `default-src 'none';` +
+                        `frame-ancestors 'none';`,
                     ],
                 },
             });
@@ -55,7 +65,7 @@ export function createMainWindow() {
             callback({
                 responseHeaders: {
                     ...details.responseHeaders,
-                    'Content-Security-Policy': [
+                    'content-security-policy': [
                         `default-src chrome: 'self';` +
                         `script-src chrome: 'self'${app.isPackaged ? '' : ` devtools: 'unsafe-eval'`};` +
                         `style-src chrome: https: http: data: 'self' 'unsafe-inline'${app.isPackaged ? '' : ` devtools:`};` +
