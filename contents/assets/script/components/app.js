@@ -21,6 +21,11 @@ import { getSuggests as getMdSuggests,
 
 
 
+const LOCAL_STORAGE_KEY = '_mdne_app_settings__Xlnuf3Ao';
+const LOCAL_STORAGE_VERSION = 2;
+const LOCAL_STORAGE_INITIAL = `{version:${LOCAL_STORAGE_VERSION},editor:{},renderer:{}}`;
+
+
 export default class App extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -106,7 +111,7 @@ export default class App extends React.Component {
         }
 
         {
-            const appSettingsStr = window.localStorage.getItem('_mdne_app_settings__Xlnuf3Ao') || '{editor:{},renderer:{}}';
+            const appSettingsStr = window.localStorage.getItem(LOCAL_STORAGE_KEY) || LOCAL_STORAGE_INITIAL;
             const appSettings = JSON.parse(appSettingsStr);
             const editor = AppState.AceEditor[this.state.currentAceId];
             editor.setOptions(appSettings.editor ?? {});
@@ -425,17 +430,22 @@ export default class App extends React.Component {
     // eslint-disable-next-line no-unused-vars
     handleSettingsClick(ev) {
         const editor = AppState.AceEditor[this.state.currentAceId];
-        const appSettingsStr = window.localStorage.getItem('_mdne_app_settings__Xlnuf3Ao') || '{editor:{},renderer:{}}';
-        this.refs.settingsDialog.showModal({
-            editor: editor.getOptions(),
-            renderer: JSON.parse(appSettingsStr).renderer ?? {},
-        }, (settings) => {
-            editor.setOptions(settings.editor);
-            window.localStorage.setItem('_mdne_app_settings__Xlnuf3Ao', JSON.stringify(settings));
-            this.setState({
-                darkThemePreview: settings?.renderer?.darkThemePreview ?? false,
-            });
-        });
+        const appSettingsStr = window.localStorage.getItem(LOCAL_STORAGE_KEY) || LOCAL_STORAGE_INITIAL;
+
+        this.refs.settingsDialog.showModal(
+            {
+                editor: editor.getOptions(),
+                renderer: JSON.parse(appSettingsStr).renderer ?? {},
+            },
+            (settings) => {
+                settings.version = LOCAL_STORAGE_VERSION;
+                editor.setOptions(settings.editor);
+                window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings));
+                this.setState({
+                    darkThemePreview: settings?.renderer?.darkThemePreview ?? false,
+                });
+            },
+        );
     }
 
     // eslint-disable-next-line no-unused-vars
