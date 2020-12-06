@@ -82,8 +82,8 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
 
     // eslint-disable-next-line no-inner-declarations
     async function internalSaveFileEx(forExport, text, ...filePath) {
-        const p = await window.pathJoin(...filePath);
-        const b = await window.getBaseName(p);
+        const p = await pathJoin(...filePath);
+        const b = await getBaseName(p);
         // eslint-disable-next-line no-undef
         const util = menneu.getAppEnv().RedAgateUtil;
         await util.FileSaver.saveTextAs(b, text);
@@ -232,12 +232,12 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
     });
 
     openURL_ = (async (url) => {
-        window.open(url, '_blank');
+        window.open(url, '_blank', 'noopener');
         return true;
     });
 
     openNewWindow_ = (async () => {
-        window.open(window.location.pathname + '#filename=untitled.md&open.d=eJwDAAAAAAE', '_blank');
+        window.open(window.location.pathname + '#filename=untitled.md&open.d=eJwDAAAAAAE', '_blank', 'noopener');
         return true;
     });
 
