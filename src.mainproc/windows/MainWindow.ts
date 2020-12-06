@@ -128,6 +128,7 @@ export function createMainWindow() {
     });
 
     mainWindow.webContents.on('will-navigate', (event: any, url: string) => {
+        // NOTE: Protect from `target="_top"` navigation links in the iframe.
         event.preventDefault();
     });
 
