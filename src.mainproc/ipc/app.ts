@@ -237,6 +237,36 @@ async function nativeFileSaveDialog(sender: BrowserWindow | null, title: string,
     if (!sender) {
         throw new Error('Sender BrowserWindow is not exists.');
     }
+    if (defaultPath) {
+        let needModExt = false;
+        const p = path.normalize(defaultPath);
+        if (fs.existsSync(p)) {
+            const stat = fs.statSync(p);
+            if (stat.isFile()) {
+                needModExt = true;
+            }
+        } else {
+            needModExt = true;
+        }
+        if (needModExt) {
+            if (filters && filters.length &&
+                filters[0].extensions && filters[0].extensions.length) {
+
+                let matched = false;
+                for (;;) {
+                    const ext = path.extname(defaultPath);
+                    if (! ext) {
+                        break;
+                    }
+                    defaultPath = defaultPath.slice(0, defaultPath.length - ext.length);
+                    matched = true;
+                }
+                if (matched) {
+                    defaultPath += `.${filters[0].extensions[0]}`;
+                }
+            }
+        }
+    }
     const promise = dialog.showSaveDialog(sender, {
         title,
         defaultPath: defaultPath || getDesktopPath(),
