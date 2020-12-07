@@ -1,6 +1,6 @@
 # mdne-electron - Markdown Neo Edit for Electron
 
-<img src="https://raw.githubusercontent.com/shellyln/mdne-electron/master/contents/logo.svg?sanitize=true" title="logo" style="width: 200px">
+<img src="https://raw.githubusercontent.com/shellyln/mdne-electron/master/docs/logo.svg?sanitize=true" title="logo" style="width: 200px">
 
 ### A simple markdown and code editor powered by [Markdown-it](https://github.com/markdown-it/markdown-it), [Ace](https://ace.c9.io/) and [Electron](https://electronjs.org/).
 

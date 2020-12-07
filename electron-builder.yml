@@ -21,6 +21,7 @@ files:
   - "!.github/**"
   - "!.vscode/**"
   - "!build-scripts/**"
+  - "!docs/**"
   - "!tests/**"
   - "!src.browser/**"
   - "!src.contents/**"
