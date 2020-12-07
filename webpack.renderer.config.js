@@ -22,8 +22,8 @@ module.exports = function (env) {
     return [{
         target: "web",
         entry: {
-            'mdne-ui': [
-                path.resolve(__dirname, 'contents/assets/script/index.js')
+            'index': [
+                path.resolve(__dirname, 'src.renderer/assets/script/index.js')
             ]
         },
         node: {
@@ -31,12 +31,13 @@ module.exports = function (env) {
             __filename: false,
             __dirname: false,
         },
+        experiments: {
+            outputModule: true,
+        },
         output: {
-            library: 'mdne-ui',
-
-            libraryTarget: 'umd',
-            globalObject: 'this',
-            filename: process.env.NODE_ENV === 'production' ? '[name].min.js' : '[name].js',
+            uniqueName: 'mdneUI',
+            module: true,
+            filename: process.env.NODE_ENV === 'production' ? '[name].js' : '[name].js',
             path: path.resolve(__dirname, 'contents/assets/script'),
             devtoolModuleFilenameTemplate: void 0
         },

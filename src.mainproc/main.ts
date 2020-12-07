@@ -83,19 +83,19 @@ app.on('ready', () => {
         callback(filePath);
     });
 
-    protocol.registerBufferProtocol('app', async (req, callback) => {
-        try {
-            const filePath = normalizePath(decodeURIComponent(new url.URL(req.url).pathname), true);
-            const buf = await util.promisify(fs.readFile)(filePath, {encoding: 'utf8'});
-            callback({mimeType: getContentType(filePath), data: Buffer.from(buf)});
-        } catch (e) {
-            // tslint:disable-next-line:no-console
-            console.error(e);
-            // tslint:disable-next-line:no-console
-            console.error(req.url);
-            callback({ statusCode: 500 });
-        }
-    });
+    // protocol.registerBufferProtocol('app', async (req, callback) => {
+    //     try {
+    //         const filePath = normalizePath(decodeURIComponent(new url.URL(req.url).pathname), true);
+    //         const buf = await util.promisify(fs.readFile)(filePath, {encoding: 'utf8'});
+    //         callback({mimeType: getContentType(filePath), data: Buffer.from(buf)});
+    //     } catch (e) {
+    //         // tslint:disable-next-line:no-console
+    //         console.error(e);
+    //         // tslint:disable-next-line:no-console
+    //         console.error(req.url);
+    //         callback({ statusCode: 500 });
+    //     }
+    // });
 
     createMainWindow();
 });

@@ -48,6 +48,7 @@ build/Release
 /node_modules/
 
 /bin/
+/contents/
 /dist/
 /dist.electron/
 
@@ -61,5 +62,5 @@ build/Release
 *.sw*
 
 # temp folders
-/contents/out/preview.html
-/contents/out/preview.pdf
+/src.contents/out/preview.html
+/src.contents/out/preview.pdf
