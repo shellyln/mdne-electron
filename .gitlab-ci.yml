@@ -20,15 +20,6 @@ test:node:12:
     - npm run build
     - npm test
 
-test:node:11:
-  image: node:11
-  script:
-    - node -v
-    - npm -v
-    - npm run clean
-    - npm run build
-    - npm test
-
 # LTS
 test:node:10:
   image: node:10
