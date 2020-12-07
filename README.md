@@ -74,14 +74,26 @@ npm ci
 # npm install    # it causes a dependency update
 ```
 
-### Compiles for production
+### Build for production
 ```sh
 npm run build
 ```
 
-### Compiles for production (only electron main process)
+### Build for production (only electron main process)
 ```sh
 npm run build:mainproc
+```
+
+### Build for production (only electron renderer process)
+```sh
+npm run build:renderer
+```
+
+### Build [mdne online](https://shellyln.github.io/mdne/) PWA app
+```sh
+npm run build:browser
+
+# and edit `contents/service-worker.js` to set `precache-manifest.*.js` file name.
 ```
 
 ### Clean project
@@ -96,7 +108,7 @@ npm run start
 
 ### Build electron distribution executable files (unpacked)
 ```sh
-npm run pack
+npm run dist:unpacked
 ```
 
 ### Build electron distribution executable files (packing to the installer)
@@ -108,12 +120,12 @@ npm run dist          # build for current machine
 # npm run dist:mac    # build for macos (x64)
 ```
 
-### Run your tests
+### Run tests
 ```
 npm run test
 ```
 
-### Lints and fixes files
+### Linting
 ```
 npm run lint
 ```
