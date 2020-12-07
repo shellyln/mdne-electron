@@ -17,3 +17,23 @@ mac:
 asarUnpack:
   - config/**
   - contents/out/**
+files:
+  - "!.github/**"
+  - "!.vscode/**"
+  - "!build-scripts/**"
+  - "!tests/**"
+  - "!src.browser/**"
+  - "!src.contents/**"
+  - "!src.mainproc/**"
+  - "!src.renderer/**"
+  - "!.browserslistrc"
+  - "!.eslintrc.json"
+  - "!.gitlab-ci.yml"
+  - "!.npmrc"
+  - "!babel.config.json"
+  - "!README.md"
+  - "!tsconfig.json"
+  - "!tsconfig.mainproc.json"
+  - "!tslint.json"
+  - "!webpack.mainproc.config.js"
+  - "!webpack.renderer.config.js"
