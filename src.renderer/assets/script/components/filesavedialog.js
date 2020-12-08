@@ -28,6 +28,9 @@ export default class FileSaveDialog extends React.Component {
         this.state.currentDir = '';
         this.state.currentDirFiles = [];
         this.state.inputFileName = '';
+
+        this.dialogRef = React.createRef();
+        this.fileNameInputRef = React.createRef();
     }
 
     showModal(options, handler) {
@@ -66,7 +69,7 @@ export default class FileSaveDialog extends React.Component {
                 }
             })();
         } else {
-            this.refs.dialog.showModal();
+            this.dialogRef.current.showModal();
             document.activeElement.blur();
 
             listDirectory(options.currentFilePath)
@@ -97,7 +100,7 @@ export default class FileSaveDialog extends React.Component {
 
             getBaseName(options.currentFilePath)
             .then(name => {
-                this.refs.fileName.focus();
+                this.fileNameInputRef.current.focus();
                 this.setState({inputFileName: name});
             })
             // eslint-disable-next-line no-unused-vars
@@ -110,7 +113,7 @@ export default class FileSaveDialog extends React.Component {
 
     handleFileListItemClick(ev, name, isDir) {
         if (isDir) {
-            this.refs.fileName.focus();
+            this.fileNameInputRef.current.focus();
 
             listDirectory(this.state.currentDir, name)
             .then(info => {
@@ -122,7 +125,7 @@ export default class FileSaveDialog extends React.Component {
                 alertWrap(e);
             });
         } else {
-            this.refs.fileName.focus();
+            this.fileNameInputRef.current.focus();
             this.setState({inputFileName: name});
         }
     }
@@ -153,7 +156,7 @@ export default class FileSaveDialog extends React.Component {
             this.handler(this.state.currentDir, fileName);
 
             document.activeElement.blur();
-            this.refs.dialog.close();
+            this.dialogRef.current.close();
         } catch (e) {
             await alertWrap(e);
         }
@@ -178,12 +181,12 @@ export default class FileSaveDialog extends React.Component {
     // eslint-disable-next-line no-unused-vars
     handleCancelClick(ev) {
         document.activeElement.blur();
-        this.refs.dialog.close();
+        this.dialogRef.current.close();
     }
 
     render() {
         return (lsx`
-        (dialog (@ (ref "dialog")
+        (dialog (@ (ref ${this.dialogRef})
                    (style (backgroundColor "#333")
                           (color "white") ))
             (h5 ${this.state.title})
@@ -215,7 +218,7 @@ export default class FileSaveDialog extends React.Component {
                 (div (@ (className "row"))
                     (div (@ (className "input-field col s10"))
                         (label "File name")
-                        (input (@ (ref "fileName")
+                        (input (@ (ref ${this.fileNameInputRef})
                                   (style (color "white"))
                                   (type "text")
                                   (spellcheck "false")

@@ -27,6 +27,9 @@ export default class FileOpenDialog extends React.Component {
         this.state.currentDir = '';
         this.state.currentDirFiles = [];
         this.state.inputFileName = '';
+
+        this.dialogRef = React.createRef();
+        this.fileNameInputRef = React.createRef();
     }
 
     showModal(options, handler) {
@@ -57,7 +60,7 @@ export default class FileOpenDialog extends React.Component {
                 }
             })();
         } else {
-            this.refs.dialog.showModal();
+            this.dialogRef.current.showModal();
             document.activeElement.blur();
 
             listDirectory(options.currentFilePath)
@@ -90,7 +93,7 @@ export default class FileOpenDialog extends React.Component {
 
     handleFileListItemClick(ev, name, isDir) {
         if (isDir) {
-            this.refs.fileName.focus();
+            this.fileNameInputRef.current.focus();
             this.setState({inputFileName: ''});
 
             listDirectory(this.state.currentDir, name)
@@ -103,7 +106,7 @@ export default class FileOpenDialog extends React.Component {
                 alertWrap(e);
             });
         } else {
-            this.refs.fileName.focus();
+            this.fileNameInputRef.current.focus();
             this.setState({inputFileName: name});
         }
     }
@@ -125,7 +128,7 @@ export default class FileOpenDialog extends React.Component {
             this.handler(this.state.currentDir, fileName);
 
             document.activeElement.blur();
-            this.refs.dialog.close();
+            this.dialogRef.current.close();
         } catch (e) {
             await alertWrap(e);
         }
@@ -150,12 +153,12 @@ export default class FileOpenDialog extends React.Component {
     // eslint-disable-next-line no-unused-vars
     handleCancelClick(ev) {
         document.activeElement.blur();
-        this.refs.dialog.close();
+        this.dialogRef.current.close();
     }
 
     render() {
         return (lsx`
-        (dialog (@ (ref "dialog")
+        (dialog (@ (ref ${this.dialogRef})
                    (style (backgroundColor "#333")
                           (color "white") ))
             (h5 ${this.state.title})
@@ -187,7 +190,7 @@ export default class FileOpenDialog extends React.Component {
                 (div (@ (className "row"))
                     (div (@ (className "input-field col s10"))
                         (label "File name")
-                        (input (@ (ref "fileName")
+                        (input (@ (ref ${this.fileNameInputRef})
                                   (style (color "white"))
                                   (type "text")
                                   (spellcheck "false")
