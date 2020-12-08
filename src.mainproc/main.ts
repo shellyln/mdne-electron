@@ -4,10 +4,8 @@
 
 
 // Modules to control application life and create native browser window
-import * as fs              from 'fs';
 import * as path            from 'path';
 import * as url             from 'url';
-import * as util            from 'util';
 import { app,
          protocol,
          Menu }             from 'electron';
@@ -18,7 +16,6 @@ import { contentsRootDir }  from './settings';
 import { setStartupFilePath,
          getLastSrcPath,
          tmpOutDir }        from './lib/paths';
-import   getContentType     from './lib/mime';
 
 // Window
 import { createMainWindow } from './windows/MainWindow';
@@ -59,14 +56,12 @@ app.on('ready', () => {
         contentsRoot = contentsRoot.replace(/\\/g, '/');
     }
 
-    const normalizePath = (filePath: string, isAppScheme: boolean) => {
-        if (!isAppScheme && process.platform === 'win32') {
+    const normalizePath = (filePath: string) => {
+        if (process.platform === 'win32') {
             filePath = filePath.replace(/\\/g, '/');
             if (filePath.match(/^\/[A-Za-z]:/)) {
                 filePath = filePath.slice(1);
             }
-        } else if (isAppScheme) {
-            filePath = path.join(contentsRoot, filePath.slice(1));
         }
         filePath = path.normalize(filePath);
         if (filePath.startsWith(tmpOutDir) && filePath !== previewHtml && filePath !== previewPdf) {
@@ -79,23 +74,9 @@ app.on('ready', () => {
     };
 
     protocol.interceptFileProtocol('file', (req, callback) => {
-        const filePath = normalizePath(decodeURIComponent(new url.URL(req.url).pathname), false);
+        const filePath = normalizePath(decodeURIComponent(new url.URL(req.url).pathname));
         callback(filePath);
     });
-
-    // protocol.registerBufferProtocol('app', async (req, callback) => {
-    //     try {
-    //         const filePath = normalizePath(decodeURIComponent(new url.URL(req.url).pathname), true);
-    //         const buf = await util.promisify(fs.readFile)(filePath, {encoding: 'utf8'});
-    //         callback({mimeType: getContentType(filePath), data: Buffer.from(buf)});
-    //     } catch (e) {
-    //         // tslint:disable-next-line:no-console
-    //         console.error(e);
-    //         // tslint:disable-next-line:no-console
-    //         console.error(req.url);
-    //         callback({ statusCode: 500 });
-    //     }
-    // });
 
     createMainWindow();
 });
