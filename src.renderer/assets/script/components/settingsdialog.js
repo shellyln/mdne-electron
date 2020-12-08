@@ -5,8 +5,8 @@
 
 
 export default class SettingsDialog extends React.Component {
-    constructor(props, context) {
-        super(props, context);
+    constructor(props) {
+        super(props);
 
         this.state = {};
         this.state.showFields = false;
@@ -16,10 +16,12 @@ export default class SettingsDialog extends React.Component {
         this.state.wrap = false;
         this.state.darkThemePreview = false;
         this.state.theme = 'monokai';
+
+        this.dialogRef = React.createRef();
     }
 
     showModal(options, handler) {
-        this.refs.dialog.showModal();
+        this.dialogRef.current.showModal();
         document.activeElement.blur();
         this.options = options;
         this.handler = handler;
@@ -86,7 +88,7 @@ export default class SettingsDialog extends React.Component {
     // eslint-disable-next-line no-unused-vars
     handleOkClick(ev) {
         document.activeElement.blur();
-        this.refs.dialog.close();
+        this.dialogRef.current.close();
 
         const fontSize = Number(this.state.fontSize);
         this.handler({
@@ -106,12 +108,12 @@ export default class SettingsDialog extends React.Component {
     // eslint-disable-next-line no-unused-vars
     handleCancelClick(ev) {
         document.activeElement.blur();
-        this.refs.dialog.close();
+        this.dialogRef.current.close();
     }
 
     render() {
         return (lsx`
-        (dialog (@ (ref "dialog")
+        (dialog (@ (ref ${this.dialogRef})
                    (className "appSettingsDialog-root")
                    (style (backgroundColor "#333")
                           (color "white") ))
