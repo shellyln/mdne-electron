@@ -56,6 +56,37 @@
 * Full screen mode (F11)
 
 
+## Distributions and Integrations
+
+* [mdne-electron](https://github.com/shellyln/mdne-electron)
+  * Standalone offline desktop app for Windows/Mac/Linux.
+    * *This repository*
+    * [Electron](https://electronjs.org/) app
+* [mdne](https://github.com/shellyln/mdne)
+  * Offline desktop app for Google Chrome browser + Node.js.
+    * [Carlo](https://github.com/GoogleChromeLabs/carlo) app
+* [mdne-for-kintone](https://github.com/shellyln/mdne-for-kintone)
+  * Edit kintone record's field. (browser app)
+* [mdne online](https://shellyln.github.io/mdne/)
+  * Live demo (PWA)
+
+
+## CLI
+Please use [Ménneu](https://github.com/shellyln/menneu#use-cli) CLI.
+
+
+## Live demo
+* [https://shellyln.github.io/mdne/](https://shellyln.github.io/mdne/)
+
+#### Live demo browser requirements
+* Google Chrome: latest
+* Chromium Edge: latest
+* Firefox: latest
+
+#### Live demo restrictions
+* Rendering / exporting to PDF is not available.
+* Save and SaveAs commands download the file being edited.
+
 ----
 ## Requirements
 
@@ -153,7 +184,7 @@ See [this](https://electronjs.org/docs/tutorial/security) guide.
 ----
 ## License
 [ISC](https://github.com/shellyln/mdne-electron/blob/master/LICENSE.md)  
-Copyright (c) 2019 Shellyl_N and Authors.
+Copyright (c) 2019-2020 Shellyl_N and Authors.
 
 ## Bundled softwares' license
 
