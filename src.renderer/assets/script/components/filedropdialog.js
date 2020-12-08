@@ -18,10 +18,12 @@ import { getInputFormat,
 export default class FileDropDialog extends React.Component {
     constructor(props) {
         super(props);
+
+        this.dialogRef = React.createRef();
     }
 
     showModal(options, handler) {
-        this.refs.dialog.showModal();
+        this.dialogRef.current.showModal();
         document.activeElement.blur();
         this.options = options;
         this.handler = handler;
@@ -46,7 +48,7 @@ export default class FileDropDialog extends React.Component {
         this.openFile(path, text);
 
         document.activeElement.blur();
-        this.refs.dialog.close();
+        this.dialogRef.current.close();
         this.handler();
     }
 
@@ -116,12 +118,12 @@ export default class FileDropDialog extends React.Component {
     // eslint-disable-next-line no-unused-vars
     handleCancelClick(ev) {
         document.activeElement.blur();
-        this.refs.dialog.close();
+        this.dialogRef.current.close();
     }
 
     render() {
         return (lsx`
-        (dialog (@ (ref "dialog")
+        (dialog (@ (ref ${this.dialogRef})
                    (style (backgroundColor "#333")
                           (color "white") ))
             (h5 "Open file")
