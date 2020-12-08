@@ -65,10 +65,10 @@
 * [mdne](https://github.com/shellyln/mdne)
   * Offline desktop app for Google Chrome browser + Node.js.
     * [Carlo](https://github.com/GoogleChromeLabs/carlo) app
-* [mdne-for-kintone](https://github.com/shellyln/mdne-for-kintone)
-  * Edit kintone record's field. (browser app)
 * [mdne online](https://shellyln.github.io/mdne/)
   * Live demo (PWA)
+* [mdne-for-kintone](https://github.com/shellyln/mdne-for-kintone)
+  * Edit kintone record's field. (browser app)
 
 
 ## CLI
