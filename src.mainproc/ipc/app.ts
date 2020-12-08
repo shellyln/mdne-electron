@@ -16,7 +16,6 @@ import { ipcMain,
          BrowserWindow,
          WebContents,
          app }                     from 'electron';
-import { PUPPETEER_REVISIONS }     from 'puppeteer-core/lib/esm/puppeteer/revisions';
 import { contentsRootDir }         from '../settings';
 import { curDir,
          thisDirName,
@@ -28,9 +27,11 @@ import { curDir,
 import   commandRunner             from '../lib/cmdrunner';
 import { additionalContentStyles } from '../lib/styles';
 import { createMainWindow }        from '../windows/MainWindow';
+import { CarloLaunchOptions,
+         findChrome }              from '../vendor/carlo/find_chrome';
+
 
 // tslint:disable-next-line:no-var-requires
-const findChrome     = require('carlo/lib/find_chrome');
 const readFileAsync  = util.promisify(fs.readFile);
 const writeFileAsync = util.promisify(fs.writeFile);
 const readdirAsync   = util.promisify(fs.readdir);
@@ -39,11 +40,11 @@ const mkdirAsync     = util.promisify(fs.mkdir);
 const copyFileAsync  = util.promisify(fs.copyFile);
 
 
-const carloOptions: any = {};
+const carloOptions: CarloLaunchOptions = {};
 
 
 function setLocalChromium() {
-    carloOptions.channel = [`r${PUPPETEER_REVISIONS.chromium}`];
+    carloOptions.channel = ['chromium'];
 
     carloOptions.localDataDir = path.normalize(path.join(tmpDir, '.local-chromium'));
     fs.mkdirSync(carloOptions.localDataDir, {recursive: true});

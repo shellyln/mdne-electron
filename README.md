@@ -188,6 +188,7 @@ Copyright (c) 2019-2020 Shellyl_N and Authors.
 ## Bundled softwares' license
 
 * [Ace](https://github.com/ajaxorg/ace): [license](https://github.com/ajaxorg/ace/blob/master/LICENSE) (BSD-3-Clause)
+* [Carlo](https://github.com/GoogleChromeLabs/carlo): [license](https://github.com/GoogleChromeLabs/carlo/blob/master/LICENSE) (Apache License 2.0)
 * [Materialize](https://materializecss.com/): [license](https://github.com/Dogfalo/materialize/blob/v1-dev/LICENSE) (MIT)
 * [Normalize.css](https://necolas.github.io/normalize.css/): [license](https://github.com/necolas/normalize.css/blob/master/LICENSE.md) (MIT)
 * [React](https://reactjs.org/): [license](https://github.com/facebook/react/blob/master/LICENSE) (MIT)

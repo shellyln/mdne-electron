@@ -53,7 +53,6 @@
     "prepublishOnly": "run-s clean build test lint"
   },
   "dependencies": {
-    "carlo": "^0.9.46",
     "puppeteer-core": "^5.5.0"
   },
   "devDependencies": {
@@ -61,13 +60,14 @@
     "@babel/core": "^7.12.9",
     "@babel/preset-env": "^7.12.7",
     "@types/node": "^14.14.10",
+    "@types/puppeteer-core": "^2.0.0",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.2.2",
     "bufferutil": "^4.0.2",
     "cross-env": "^7.0.3",
-    "electron": "^11.0.3",
+    "electron": "^11.0.4",
     "electron-builder": "^22.9.1",
-    "eslint": "^7.14.0",
+    "eslint": "^7.15.0",
     "liyad": "^0.6.0",
     "menneu": "^0.5.2",
     "node-sass": "^5.0.0",
