@@ -16,8 +16,8 @@ import { getInputFormat,
 
 
 export default class FileDropDialog extends React.Component {
-    constructor(props, context) {
-        super(props, context);
+    constructor(props) {
+        super(props);
     }
 
     showModal(options, handler) {

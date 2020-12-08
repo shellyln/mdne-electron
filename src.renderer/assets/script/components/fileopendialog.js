@@ -15,8 +15,8 @@ import { alertWrap }   from '../libs/backend-wrap.js';
 
 
 export default class FileOpenDialog extends React.Component {
-    constructor(props, context) {
-        super(props, context);
+    constructor(props) {
+        super(props);
 
         this.state = {};
         this.state.title = '';

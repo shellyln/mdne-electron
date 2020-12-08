@@ -35,8 +35,8 @@ const LOCAL_STORAGE_INITIAL = `{version:${LOCAL_STORAGE_VERSION},editor:{},rende
 
 
 export default class App extends React.Component {
-    constructor(props, context) {
-        super(props, context);
+    constructor(props) {
+        super(props);
 
         this.state = {};
         this.state.stretched = true;

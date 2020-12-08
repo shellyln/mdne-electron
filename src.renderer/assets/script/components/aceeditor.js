@@ -12,8 +12,8 @@ import AppState,
 
 
 export default class AceEditor extends React.Component {
-    constructor(props, context) {
-        super(props, context);
+    constructor(props) {
+        super(props);
 
         this.state = {};
         this.editor = null;
