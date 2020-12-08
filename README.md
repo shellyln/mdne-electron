@@ -10,9 +10,7 @@
 [![GitHub forks](https://img.shields.io/github/forks/shellyln/mdne-electron.svg?style=social&label=Fork)](https://github.com/shellyln/mdne-electron/fork)
 [![GitHub stars](https://img.shields.io/github/stars/shellyln/mdne-electron.svg?style=social&label=Star)](https://github.com/shellyln/mdne-electron)
 
-
-
-## For details and features, please refer to [Original version of mdne (for Carlo)](https://github.com/shellyln/mdne).
+![screenshet](https://raw.githubusercontent.com/shellyln/mdne-electron/master/docs/screenshot.png)
 
 
 ## Features
@@ -86,6 +84,7 @@ Please use [Ménneu](https://github.com/shellyln/menneu#use-cli) CLI.
 #### Live demo restrictions
 * Rendering / exporting to PDF is not available.
 * Save and SaveAs commands download the file being edited.
+
 
 ----
 ## Requirements
