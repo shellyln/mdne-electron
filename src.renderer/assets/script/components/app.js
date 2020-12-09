@@ -53,6 +53,17 @@ export default class App extends React.Component {
         this.savedEditorStyleWidth = null;
         this.savedPreviewScrollY = 0;
 
+        this.commandBoxRef = React.createRef();
+        this.editorRef = React.createRef();
+        this.editorPlaceholderRef = React.createRef();
+        this.splitterRef = React.createRef();
+        this.rootRef = React.createRef();
+        this.appIndicatorBarRef = React.createRef();
+        this.fileDropDialogRef = React.createRef();
+        this.fileOpenDialogRef = React.createRef();
+        this.fileSaveDialogRef = React.createRef();
+        this.settingsDialogRef = React.createRef();
+
         AppState.invalidate = () => this.setState({counter: this.state.counter + 1});
 
         window.onbeforeunload = (ev) => {
@@ -134,7 +145,7 @@ export default class App extends React.Component {
         document.onkeyup = (ev) => {
             if (ev.ctrlKey && ev.shiftKey && ev.keyCode === 79) {
                 // Ctrl+Shift+O
-                this.refs.commandBox.focus();
+                this.commandBoxRef.current.focus();
             }
         };
 
@@ -184,7 +195,7 @@ export default class App extends React.Component {
     }
 
     afterFileOpen() {
-        this.refs.root.contentWindow.location.replace('empty.html');
+        this.rootRef.current.contentWindow.location.replace('empty.html');
 
         this.setState({stretched: true});
         this.savedEditorStyleWidth = null;
@@ -227,15 +238,15 @@ export default class App extends React.Component {
             // collapsed
             this.refs.editor.refs.outerWrap.style.width = this.savedEditorStyleWidth;
             this.refs.editorPlaceholder.style.width = this.savedEditorStyleWidth;
-            setTimeout(() => this.refs.root.contentWindow.scrollTo(
-                this.refs.root.contentWindow.scrollX,
+            setTimeout(() => this.rootRef.current.contentWindow.scrollTo(
+                this.rootRef.current.contentWindow.scrollX,
                 this.savedPreviewScrollY,
             ), 30);
         } else {
             // stretched
             try {
                 this.savedEditorStyleWidth = this.refs.editor.refs.outerWrap.style.width;
-                this.savedPreviewScrollY = this.refs.root.contentWindow.scrollY;
+                this.savedPreviewScrollY = this.rootRef.current.contentWindow.scrollY;
             } catch (e) {
                 // NOTE: ignore errors
             }
@@ -288,7 +299,7 @@ export default class App extends React.Component {
         if (! isPreviewable(AppState.inputFormat)) {
             // eslint-disable-next-line no-console
             console.error(`Preview of ${AppState.inputFormat} format is not supported.`);
-            this.refs.root.contentWindow.location.replace('error.html');
+            this.rootRef.current.contentWindow.location.replace('error.html');
         } else {
             if (this.state.isPdf) {
                 start(editor.getValue(), {
@@ -300,12 +311,12 @@ export default class App extends React.Component {
                             this.state.useScripting ? false : true,
                 }, null, AppState.filePath)
                 .then(outputUrl => {
-                    this.refs.root.contentWindow.location.replace(outputUrl);
+                    this.rootRef.current.contentWindow.location.replace(outputUrl);
                 })
                 .catch(async (e) => {
                     // eslint-disable-next-line no-console
                     console.error(e);
-                    this.refs.root.contentWindow.location.replace('error.html');
+                    this.rootRef.current.contentWindow.location.replace('error.html');
                 });
             } else {
                 start(editor.getValue(), {
@@ -318,19 +329,19 @@ export default class App extends React.Component {
                     darkTheme: this.state.darkThemePreview ? true : false,
                 }, null, AppState.filePath)
                 .then(outputUrl => {
-                    this.refs.root.contentWindow.location.replace(outputUrl);
-                    setTimeout(() => this.refs.root.contentWindow.scrollTo(
-                        this.refs.root.contentWindow.scrollX,
+                    this.rootRef.current.contentWindow.location.replace(outputUrl);
+                    setTimeout(() => this.rootRef.current.contentWindow.scrollTo(
+                        this.rootRef.current.contentWindow.scrollX,
                         Math.min(
                             this.savedPreviewScrollY,
-                            this.refs.root.contentWindow.document.documentElement.scrollHeight,
+                            this.rootRef.current.contentWindow.document.documentElement.scrollHeight,
                         ),
                     ), 30);
                 })
                 .catch(async (e) => {
                     // eslint-disable-next-line no-console
                     console.error(e);
-                    this.refs.root.contentWindow.location.replace('error.html');
+                    this.rootRef.current.contentWindow.location.replace('error.html');
                 });
             }
 
@@ -518,10 +529,10 @@ export default class App extends React.Component {
                     .then(outputUrl => {
                         if (outputUrl.startsWith('data:') || outputUrl.startsWith('blob:')) {
                             // emulation
-                            this.refs.root.contentWindow.location.replace(outputUrl);
+                            this.rootRef.current.contentWindow.location.replace(outputUrl);
                         } else {
                             // carlo
-                            this.refs.root.contentWindow.location.reload(true);
+                            this.rootRef.current.contentWindow.location.reload(true);
                         }
                         this.scheduleRerenderPreview = false;
                     })
@@ -539,9 +550,9 @@ export default class App extends React.Component {
         if (!this.state.stretched && !this.state.isPdf) {
             try {
                 const w = y / totalHeight;
-                const scrollY = this.refs.root.contentWindow.document.documentElement.scrollHeight * w;
-                this.refs.root.contentWindow.scrollTo(
-                    this.refs.root.contentWindow.scrollX,
+                const scrollY = this.rootRef.current.contentWindow.document.documentElement.scrollHeight * w;
+                this.rootRef.current.contentWindow.scrollTo(
+                    this.rootRef.current.contentWindow.scrollX,
                     scrollY,
                 );
                 this.savedPreviewScrollY = scrollY;
@@ -554,23 +565,23 @@ export default class App extends React.Component {
     // eslint-disable-next-line no-unused-vars
     handleAceEditorOnChangeScrollLeft(x) {
         // if (!this.state.stretched && !this.state.isPdf) {
-        //     this.refs.root.contentWindow.scrollTo(x, this.refs.root.contentWindow.scrollTop);
+        //     this.rootRef.current.contentWindow.scrollTo(x, this.rootRef.current.contentWindow.scrollTop);
         // }
     }
 
     handleCommandBoxOnKeyDown(ev) {
         const clearBox = () => {
-            this.refs.commandBox.value = '';
+            this.commandBoxRef.current.value = '';
             const instance = M.Autocomplete.getInstance(
                 document.querySelectorAll('.command-box-input.autocomplete')[0]);
             instance.close();
         };
 
         if (ev.keyCode === 13) {
-            if (this.refs.commandBox.value.trim() === '') {
+            if (this.commandBoxRef.current.value.trim() === '') {
                 clearBox();
             } else {
-                const command = `(${this.refs.commandBox.value})`;
+                const command = `(${this.commandBoxRef.current.value})`;
                 commandRunner(command)
                 .then(r => {
                     clearBox();
@@ -618,11 +629,11 @@ export default class App extends React.Component {
         const upHandler = (ev2) => {
             window.onpointermove = null;
             window.onpointerup = null;
-            this.refs.splitter.releasePointerCapture(ev2.pointerId);
+            this.splitterRef.current.releasePointerCapture(ev2.pointerId);
             this.setState({splitterMoving: false});
             setTimeout(() => {
-                this.refs.root.contentWindow.scrollTo(
-                    this.refs.root.contentWindow.scrollX,
+                this.rootRef.current.contentWindow.scrollTo(
+                    this.rootRef.current.contentWindow.scrollX,
                     this.savedPreviewScrollY,
                 );
 
@@ -633,7 +644,7 @@ export default class App extends React.Component {
         };
         window.onpointermove = moveHandler;
         window.onpointerup = upHandler;
-        this.refs.splitter.setPointerCapture(ev.pointerId);
+        this.splitterRef.current.setPointerCapture(ev.pointerId);
     }
 
     render() {
@@ -709,7 +720,7 @@ export default class App extends React.Component {
                 (span (@ (style (flexGrow "2"))) " ")
                 (div (@ (className "row command-box-input-outer") )
                     (div (@ (className "input-field col s9 command-box-input-inner") )
-                        (input (@ (ref "commandBox")
+                        (input (@ (ref ${this.commandBoxRef})
                                   (className "CommandBoxInput command-box-input autocomplete")
                                   (type "text")
                                   (placeholder ($concat
@@ -744,13 +755,13 @@ export default class App extends React.Component {
                 (div (@ (ref "editorPlaceholder")
                         (className ($concat "AceEditorPlaceholder"
                                    ${this.state.splitterMoving ? "" : " collapsed"}) ) ))
-                (div (@ (ref "splitter")
+                (div (@ (ref ${this.splitterRef})
                         (className ($concat "Splitter"
                                    ${this.state.stretched ? " collapsed" : ""}))
                         (onPointerDown ${(ev) => this.handleSplitterOnPointerDown(ev)}) ))
                 (div (@ (className ($concat "OutputIframePlaceholder"
                                    ${this.state.splitterMoving ? "" : " collapsed"}) ) ))
-                (iframe (@ (ref "root")
+                (iframe (@ (ref ${this.rootRef})
                            (src "empty.html")
                            (style (background-color ${this.state.darkThemePreview && AppState.inputFormat === 'md' ? '#1b1f23' : 'white'}))
                            ; (sandbox "")

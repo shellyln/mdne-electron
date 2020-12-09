@@ -5,7 +5,12 @@
   ],
   "linterOptions": {
     "exclude": [
-      "node_modules/**"
+      "node_modules/**",
+      "contents/**",
+      "src.browser/**",
+      "src.contents/**",
+      "src.preload/**",
+      "src.renderer/**"
     ]
   },
   "rules": {
