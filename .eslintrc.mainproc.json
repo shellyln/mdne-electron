@@ -1,0 +1,11 @@
+{
+    "extends": [
+        "./.eslintrc.ts.shared.json"
+    ],
+    "parserOptions": {
+        "project": "./tsconfig.mainproc.json",
+        "tsconfigRootDir": "."
+    },
+    "rules": {
+    }
+}

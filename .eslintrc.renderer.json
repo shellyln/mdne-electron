@@ -1,13 +1,12 @@
 {
-    "extends": ["eslint:recommended"],
-    "plugins": [],
-    "parser": "babel-eslint",
+    "extends": [
+        "./.eslintrc.js.shared.json"
+    ],
     "parserOptions": {
         "ecmaVersion": 9,
         "sourceType": "module"
     },
     "env": {
-        "node": true,
         "es6": true
     },
     "globals": {
@@ -26,9 +25,5 @@
         "mdneApi": true
     },
     "rules": {
-        "no-console": "warn",
-        "no-unused-vars": "warn",
-        "no-empty": "warn",
-        "no-inner-declarations": 0
     }
 }
