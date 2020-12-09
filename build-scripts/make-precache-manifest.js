@@ -70,3 +70,12 @@ console.log(precacheManifest);
 fs.writeFileSync(
     `./contents/precache-manifest.${precacheManifestHash}.js`,
     precacheManifest, {encoding: 'utf8'});
+
+const serviceWorkerJs = fs.readFileSync(
+    `./contents/service-worker.js`, {encoding: 'utf8'});
+const serviceWorkerJsUpdated =
+    serviceWorkerJs.replace('3bcfa298178ae96b1c7b0f447f0d6a9a', precacheManifestHash);
+
+fs.writeFileSync(
+    `./contents/service-worker.js`,
+    serviceWorkerJsUpdated, {encoding: 'utf8'});
