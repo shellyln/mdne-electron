@@ -59,7 +59,7 @@ export function getOperators({app}) {
                     const dirName = AppState.filePath ? await getDirName(AppState.filePath) : null;
                     const fullPath = await pathJoin(dirName, filePath);
                     const text = await loadFile(fullPath);
-                    app.refs.fileDropDialog.openFile(fullPath, text);
+                    app.fileDropDialogRef.current.openFile(fullPath, text);
 
                     app.afterFileOpen();
                     return '';

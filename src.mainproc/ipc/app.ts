@@ -483,6 +483,7 @@ async function listHomeDirectory() {
 
 ipc('app:editor:fileExists', arg => fileExists(...arg.filePath));
 function fileExists(...filePath: string[]) {
+    filePath = filePath.filter(x => x !== null && x!== void 0);
     if (typeof filePath[0] !== 'string') {
         throw new Error('File name is not specified');
     }
@@ -492,6 +493,7 @@ function fileExists(...filePath: string[]) {
 
 ipc('app:editor:pathJoin', arg => pathJoin(...arg.filePath));
 function pathJoin(...filePath: string[]) {
+    filePath = filePath.filter(x => x !== null && x!== void 0);
     if (typeof filePath[0] !== 'string') {
         throw new Error('File name is not specified');
     }
