@@ -58,7 +58,6 @@ export default class App extends React.Component {
         this.editorPlaceholderRef = React.createRef();
         this.splitterRef = React.createRef();
         this.rootRef = React.createRef();
-        this.appIndicatorBarRef = React.createRef();
         this.fileDropDialogRef = React.createRef();
         this.fileOpenDialogRef = React.createRef();
         this.fileSaveDialogRef = React.createRef();
@@ -180,6 +179,7 @@ export default class App extends React.Component {
                 editor.setValue(file.text);
                 editor.clearSelection();
                 editor.session.getUndoManager().markClean();
+                editor.moveCursorTo(0, 0);
 
                 this.setState({counter: this.state.counter + 1});
             } else {
@@ -200,7 +200,7 @@ export default class App extends React.Component {
         this.setState({stretched: true});
         this.savedEditorStyleWidth = null;
         this.savedPreviewScrollY = 0;
-        this.refs.editor.refs.outerWrap.style.width = null;
+        this.editorRef.current.outerWrapRef.current.style.width = null;
         this.editorPlaceholderRef.current.style.width = null;
 
         document.activeElement.blur();
@@ -236,7 +236,7 @@ export default class App extends React.Component {
         this.setState({stretched: !this.state.stretched});
         if (this.state.stretched) {
             // collapsed
-            this.refs.editor.refs.outerWrap.style.width = this.savedEditorStyleWidth;
+            this.editorRef.current.outerWrapRef.current.style.width = this.savedEditorStyleWidth;
             this.editorPlaceholderRef.current.style.width = this.savedEditorStyleWidth;
             setTimeout(() => this.rootRef.current.contentWindow.scrollTo(
                 this.rootRef.current.contentWindow.scrollX,
@@ -245,12 +245,12 @@ export default class App extends React.Component {
         } else {
             // stretched
             try {
-                this.savedEditorStyleWidth = this.refs.editor.refs.outerWrap.style.width;
+                this.savedEditorStyleWidth = this.editorRef.current.outerWrapRef.current.style.width;
                 this.savedPreviewScrollY = this.rootRef.current.contentWindow.scrollY;
             } catch (e) {
                 // NOTE: ignore errors
             }
-            this.refs.editor.refs.outerWrap.style.width = null;
+            this.editorRef.current.outerWrapRef.current.style.width = null;
             this.editorPlaceholderRef.current.style.width = null;
         }
         document.activeElement.blur();
@@ -283,7 +283,7 @@ export default class App extends React.Component {
     // eslint-disable-next-line no-unused-vars
     handleShowClick(ev) {
         if (this.state.stretched) {
-            this.refs.editor.refs.outerWrap.style.width = this.savedEditorStyleWidth;
+            this.editorRef.current.outerWrapRef.current.style.width = this.savedEditorStyleWidth;
             this.editorPlaceholderRef.current.style.width = this.savedEditorStyleWidth;
         }
 
@@ -334,7 +334,8 @@ export default class App extends React.Component {
                         this.rootRef.current.contentWindow.scrollX,
                         Math.min(
                             this.savedPreviewScrollY,
-                            this.rootRef.current.contentWindow.document.documentElement.scrollHeight,
+                            this.rootRef.current.contentWindow.document.documentElement?.scrollHeight
+                                ?? this.savedPreviewScrollY,
                         ),
                     ), 30);
                 })
@@ -623,7 +624,7 @@ export default class App extends React.Component {
         const moveHandler = (ev2) => {
             const maxWidth = Math.max(Math.min(ev2.clientX - 5, window.innerWidth - 440), 400);
             const width = `${Math.round(maxWidth / window.innerWidth * 100)}%`;
-            this.refs.editor.refs.outerWrap.style.width = width;
+            this.editorRef.current.outerWrapRef.current.style.width = width;
             this.editorPlaceholderRef.current.style.width = width;
         };
         const upHandler = (ev2) => {
@@ -743,7 +744,7 @@ export default class App extends React.Component {
                            (onClick ${(ev) => this.handleStretchedClick(ev)}) )
                     (i (@ (className "material-icons")) "chrome_reader_mode") ))
             (div (@ (className "AppMainContentWrap"))
-                (AceEditor (@ (ref "editor")
+                (AceEditor (@ (ref ${this.editorRef})
                               (id "editor")
                               (stretched ${this.state.stretched ? true: false})
                               (collapsed ${this.state.splitterMoving ? true: false})
@@ -767,8 +768,7 @@ export default class App extends React.Component {
                            ; (sandbox "")
                            (className ($concat "OutputIframe"
                                       ${this.state.stretched || this.state.splitterMoving ? " collapsed" : ""}) ) ))
-                (div (@ (ref "appIndicatorBar")
-                        (id "appIndicatorBar")
+                (div (@ (id "appIndicatorBar")
                         (className "AppIndicatorBar")) "") )
             (FileDropDialog (@ (ref ${this.fileDropDialogRef})))
             (FileOpenDialog (@ (ref ${this.fileOpenDialogRef})))

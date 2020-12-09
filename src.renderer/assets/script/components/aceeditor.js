@@ -17,6 +17,8 @@ export default class AceEditor extends React.Component {
 
         this.state = {};
         this.editor = null;
+
+        this.outerWrapRef = React.createRef();
     }
 
     componentDidMount() {
@@ -65,7 +67,7 @@ export default class AceEditor extends React.Component {
 
     render() {
         return (lsx`
-        (div (@ (ref "outerWrap")
+        (div (@ (ref ${this.outerWrapRef})
                 (className
                     ($concat "AceEditorOuterWrap"
                              ${this.props.stretched ? " stretched" : ""}

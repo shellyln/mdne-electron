@@ -42,6 +42,7 @@ export default class FileDropDialog extends React.Component {
         editor.setValue(text);
         editor.clearSelection();
         editor.session.getUndoManager().markClean();
+        editor.moveCursorTo(0, 0);
     }
 
     openFileAndClose(path, text) {
