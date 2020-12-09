@@ -122,8 +122,6 @@ npm run build:renderer
 ### Build [mdne online](https://shellyln.github.io/mdne/) PWA app
 ```sh
 npm run build:browser
-
-# and edit `contents/service-worker.js` to set `precache-manifest.*.js` file name.
 ```
 
 ### Clean project
