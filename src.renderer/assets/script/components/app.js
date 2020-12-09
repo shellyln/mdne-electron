@@ -201,7 +201,7 @@ export default class App extends React.Component {
         this.savedEditorStyleWidth = null;
         this.savedPreviewScrollY = 0;
         this.refs.editor.refs.outerWrap.style.width = null;
-        this.refs.editorPlaceholder.style.width = null;
+        this.editorPlaceholderRef.current.style.width = null;
 
         document.activeElement.blur();
 
@@ -213,9 +213,9 @@ export default class App extends React.Component {
     }
 
     openFileOpenDialog() {
-        this.refs.fileDropDialog.showModal({
+        this.fileDropDialogRef.current.showModal({
             aceId: this.state.currentAceId,
-            fileOpenDialog: this.refs.fileOpenDialog,
+            fileOpenDialog: this.fileOpenDialogRef.current,
         }, () => this.afterFileOpen());
     }
 
@@ -237,7 +237,7 @@ export default class App extends React.Component {
         if (this.state.stretched) {
             // collapsed
             this.refs.editor.refs.outerWrap.style.width = this.savedEditorStyleWidth;
-            this.refs.editorPlaceholder.style.width = this.savedEditorStyleWidth;
+            this.editorPlaceholderRef.current.style.width = this.savedEditorStyleWidth;
             setTimeout(() => this.rootRef.current.contentWindow.scrollTo(
                 this.rootRef.current.contentWindow.scrollX,
                 this.savedPreviewScrollY,
@@ -251,7 +251,7 @@ export default class App extends React.Component {
                 // NOTE: ignore errors
             }
             this.refs.editor.refs.outerWrap.style.width = null;
-            this.refs.editorPlaceholder.style.width = null;
+            this.editorPlaceholderRef.current.style.width = null;
         }
         document.activeElement.blur();
 
@@ -284,7 +284,7 @@ export default class App extends React.Component {
     handleShowClick(ev) {
         if (this.state.stretched) {
             this.refs.editor.refs.outerWrap.style.width = this.savedEditorStyleWidth;
-            this.refs.editorPlaceholder.style.width = this.savedEditorStyleWidth;
+            this.editorPlaceholderRef.current.style.width = this.savedEditorStyleWidth;
         }
 
         if (this.state.isPdf &&
@@ -381,7 +381,7 @@ export default class App extends React.Component {
 
     // eslint-disable-next-line no-unused-vars
     handleSaveAsClick(ev) {
-        this.refs.fileSaveDialog.showModal({
+        this.fileSaveDialogRef.current.showModal({
             title: 'Save as',
             currentAceId: this.state.currentAceId,
             currentFilePath: AppState.filePath,
@@ -444,7 +444,7 @@ export default class App extends React.Component {
         if (! isPreviewable(AppState.inputFormat)) {
             await alertWrap(`Preview of ${AppState.inputFormat} format is not supported.`);
         } else {
-            this.refs.fileSaveDialog.showModal({
+            this.fileSaveDialogRef.current.showModal({
                 title: 'Export',
                 currentAceId: this.state.currentAceId,
                 currentFilePath: AppState.filePath,
@@ -480,7 +480,7 @@ export default class App extends React.Component {
         const editor = AppState.AceEditor[this.state.currentAceId];
         const appSettingsStr = window.localStorage.getItem(LOCAL_STORAGE_KEY) || LOCAL_STORAGE_INITIAL;
 
-        this.refs.settingsDialog.showModal(
+        this.settingsDialogRef.current.showModal(
             {
                 editor: editor.getOptions(),
                 renderer: JSON.parse(appSettingsStr).renderer ?? {},
@@ -624,7 +624,7 @@ export default class App extends React.Component {
             const maxWidth = Math.max(Math.min(ev2.clientX - 5, window.innerWidth - 440), 400);
             const width = `${Math.round(maxWidth / window.innerWidth * 100)}%`;
             this.refs.editor.refs.outerWrap.style.width = width;
-            this.refs.editorPlaceholder.style.width = width;
+            this.editorPlaceholderRef.current.style.width = width;
         };
         const upHandler = (ev2) => {
             window.onpointermove = null;
@@ -752,7 +752,7 @@ export default class App extends React.Component {
                               (onChange ${(o) => this.handleAceEditorOnChange(o)})
                               (onChangeScrollTop ${(y, totalHeight) => this.handleAceEditorOnChangeScrollTop(y, totalHeight)})
                               (onChangeScrollLeft ${(x) => this.handleAceEditorOnChangeScrollLeft(x)}) ))
-                (div (@ (ref "editorPlaceholder")
+                (div (@ (ref ${this.editorPlaceholderRef})
                         (className ($concat "AceEditorPlaceholder"
                                    ${this.state.splitterMoving ? "" : " collapsed"}) ) ))
                 (div (@ (ref ${this.splitterRef})
@@ -770,10 +770,10 @@ export default class App extends React.Component {
                 (div (@ (ref "appIndicatorBar")
                         (id "appIndicatorBar")
                         (className "AppIndicatorBar")) "") )
-            (FileDropDialog (@ (ref "fileDropDialog")))
-            (FileOpenDialog (@ (ref "fileOpenDialog")))
-            (FileSaveDialog (@ (ref "fileSaveDialog")))
-            (SettingsDialog (@ (ref "settingsDialog"))) )`
+            (FileDropDialog (@ (ref ${this.fileDropDialogRef})))
+            (FileOpenDialog (@ (ref ${this.fileOpenDialogRef})))
+            (FileSaveDialog (@ (ref ${this.fileSaveDialogRef})))
+            (SettingsDialog (@ (ref ${this.settingsDialogRef}))) )`
         );
     }
 }

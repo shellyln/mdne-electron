@@ -31,6 +31,7 @@ export default class FileSaveDialog extends React.Component {
 
         this.dialogRef = React.createRef();
         this.fileNameInputRef = React.createRef();
+        this.fileTypeSelectorRef = React.createRef();
     }
 
     showModal(options, handler) {
@@ -222,12 +223,12 @@ export default class FileSaveDialog extends React.Component {
                                   (style (color "white"))
                                   (type "text")
                                   (spellcheck "false")
-                                  (onChange ${() => this.setState({inputFileName: this.refs.fileName.value})})
+                                  (onChange ${() => this.setState({inputFileName: this.fileNameInputRef.current.value})})
                                   (value ${this.state.inputFileName}) )))
                     (div (@ (className "input-field col s2"))
-                        (select (@ (ref "fileType")
+                        (select (@ (ref ${this.fileTypeSelectorRef})
                                    (className "browser-default")
-                                   (onChange ${() => this.setState({selectedFileType: this.refs.fileType.value})}) )
+                                   (onChange ${() => this.setState({selectedFileType: this.fileTypeSelectorRef.current.value})}) )
                             ($=for ${this.state.fileTypes}
                                 (option (@ (key   ::$data:value)
                                            (value ::$data:value)
