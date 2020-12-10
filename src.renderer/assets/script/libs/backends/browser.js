@@ -211,20 +211,20 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
     });
 
     getStartupFile_ = (async () => {
-        let targetPath = '/welcome.md';
+        let targetPath = 'Welcome.md';
         let targetUrl = welcomeFile;
         // eslint-disable-next-line no-undef
         const util = menneu.getAppEnv().RedAgateUtil;
 
         if (window.location.hash) {
+            const result = {};
+            window.location.hash.substring(1).split('&').forEach((part) => {
+                const item = part.split('=');
+                result[item[0]] = decodeURIComponent(item[1]);
+            });
             if (window.location.hash.indexOf('open.d=') >= 0) {
-                const result = {};
-                window.location.hash.substring(1).split('&').forEach((part) => {
-                    const item = part.split('=');
-                    result[item[0]] = decodeURIComponent(item[1]);
-                });
                 if (result['open.d']) {
-                    targetPath = result['filename'] || '/Untitled.md';
+                    targetPath = result['filename'] || 'Untitled.md';
                     try {
                         // eslint-disable-next-line no-undef
                         targetUrl = `data:text/plain;base64,${util.Base64.encode(pako.inflate(
@@ -234,17 +234,15 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
                     } catch (e) {}
                 }
             } else if (window.location.hash.indexOf('open.url=') >= 0) {
-                const result = {};
-                window.location.hash.substring(1).split('&').forEach((part) => {
-                    const item = part.split('=');
-                    result[item[0]] = decodeURIComponent(item[1]);
-                });
                 if (result['open.url']) {
                     targetPath = result['open.url']
                         .substring(result['open.url'].lastIndexOf('/') + 1) ||
                         'index';
                     targetUrl = result['open.url'];
                 }
+            } else if (result['filename']) {
+                targetPath = result['filename'];
+                targetUrl = `data:text/plain,`;
             }
         }
         // eslint-disable-next-line no-undef
@@ -264,7 +262,7 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
     });
 
     openNewWindow_ = (async () => {
-        window.open(window.location.pathname + '#filename=untitled.md&open.d=eJwDAAAAAAE', '_blank', 'noopener');
+        window.open(window.location.pathname + '#filename=Untitled.md', '_blank', 'noopener');
         return true;
     });
 
