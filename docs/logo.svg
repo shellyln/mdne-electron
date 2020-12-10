@@ -58,18 +58,18 @@
      id="layer1"
      transform="translate(-0.8010412,-0.2770416)">
     <rect
-       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.76969504;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect822-2"
        width="36.975517"
        height="29.56719"
        x="8.7054701"
-       y="3.5797486" />
+       y="3.59" />
     <rect
-       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.17142045;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect822"
        width="61.647915"
        height="41.076565"
-       x="4.0621872"
+       x="4.115"
        y="10.250478" />
     <path
        style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.5;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
