@@ -31,7 +31,7 @@ import { getSuggests as getMdSuggests,
 
 const LOCAL_STORAGE_KEY = '_mdne_app_settings__Xlnuf3Ao';
 const LOCAL_STORAGE_VERSION = 2;
-const LOCAL_STORAGE_INITIAL = `{version:${LOCAL_STORAGE_VERSION},editor:{},renderer:{}}`;
+const LOCAL_STORAGE_INITIAL = `{"version":${LOCAL_STORAGE_VERSION},"editor":{},"renderer":{}}`;
 
 
 export default class App extends React.Component {
