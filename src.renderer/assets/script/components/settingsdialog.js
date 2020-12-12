@@ -14,6 +14,7 @@ export default class SettingsDialog extends React.Component {
         this.state.fontSize = 14;
         this.state.tabSize = 4;
         this.state.wrap = false;
+        this.state.showInvisibles = false;
         this.state.darkThemePreview = false;
         this.state.theme = 'monokai';
 
@@ -31,6 +32,7 @@ export default class SettingsDialog extends React.Component {
             fontSize: options.editor.fontSize > 0 ? options.editor.fontSize : 14,
             tabSize: options.editor.tabSize,
             wrap: options.editor.wrap === 'off' ? false : (options.editor.wrap === 'free'),
+            showInvisibles: !!options.editor.showInvisibles,
             theme: (options.editor.theme || '').replace('ace/theme/', ''),
             darkThemePreview: options.renderer.darkThemePreview,
         });
@@ -43,42 +45,42 @@ export default class SettingsDialog extends React.Component {
         /* const instances = */ M.FormSelect.init(elems, {});
     }
 
-    // eslint-disable-next-line no-unused-vars
     handleFontFamilyChange(ev) {
         this.setState({
             fontFamily: (ev.target.value || '').trim() === '' ? null : ev.target.value,
         });
     }
 
-    // eslint-disable-next-line no-unused-vars
     handleFontSizeChange(ev) {
         this.setState({
             fontSize: ev.target.value,
         });
     }
 
-    // eslint-disable-next-line no-unused-vars
     handleTabSizeChange(ev) {
         this.setState({
             tabSize: Math.floor(Number(ev.target.value)),
         });
     }
 
-    // eslint-disable-next-line no-unused-vars
     handleWrapChange(ev) {
         this.setState({
             wrap: ev.target.checked,
         });
     }
 
-    // eslint-disable-next-line no-unused-vars
+    handleShowInvisiblesChange(ev) {
+        this.setState({
+            showInvisibles: ev.target.checked,
+        });
+    }
+
     handleDarkThemePreviewChange(ev) {
         this.setState({
             darkThemePreview: ev.target.checked,
         });
     }
 
-    // eslint-disable-next-line no-unused-vars
     handleThemeChange(ev) {
         this.setState({
             theme: ev.target.value,
@@ -97,6 +99,7 @@ export default class SettingsDialog extends React.Component {
                 fontSize: fontSize > 0 ? fontSize : 14,
                 tabSize: this.state.tabSize > 0 ? this.state.tabSize : 4,
                 wrap: this.state.wrap,
+                showInvisibles: this.state.showInvisibles,
                 theme: `ace/theme/${this.state.theme}`,
             },
             renderer: {
@@ -167,13 +170,20 @@ export default class SettingsDialog extends React.Component {
                                 "Tab size") ))
                     (div (@ (className "row")
                             (style (margin "0")) )
-                        (div (@ (className "input-field col s2"))
+                        (div (@ (className "input-field col s4"))
                             (label
                                 (input (@ (type "checkbox")
                                           (className "filled-in")
                                           (checked ${this.state.wrap ? 'checked' : ''})
                                           (onChange ${(ev) => this.handleWrapChange(ev)}) ))
                                 (span "Wrap") ))
+                        (div (@ (className "input-field col s4"))
+                            (label
+                                (input (@ (type "checkbox")
+                                          (className "filled-in")
+                                          (checked ${this.state.showInvisibles ? 'checked' : ''})
+                                          (onChange ${(ev) => this.handleShowInvisiblesChange(ev)}) ))
+                                (span "Show Invisibles") ))
                         (div (@ (className "input-field col s4"))
                             (label
                                 (input (@ (type "checkbox")
