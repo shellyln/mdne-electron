@@ -18,7 +18,7 @@ import { registerWindow,
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 
-export function createMainWindow() {
+export function createMainWindow(): electron.BrowserWindow {
     // NOTE: You cannot require or use this module until the ready event of the app module is emitted.
     const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
 
@@ -38,6 +38,7 @@ export function createMainWindow() {
     registerWindow(mainWindow, mainWindow);
 
     // and load the html of the app.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     mainWindow.loadFile(path.join(app.getAppPath(), `${contentsRootDir}/electron.html`));
 
     // CSP is not work while the location scheme is 'file'.
@@ -123,6 +124,7 @@ export function createMainWindow() {
     mainWindow.webContents.on('new-window', (event: any, url: string) => {
         event.preventDefault();
         if (url.match(/^https?:\/\//)) {
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             shell.openExternal(url);
         }
     });

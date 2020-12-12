@@ -59,6 +59,7 @@ if (process.env.MDNE_CHROME_CHANNEL_CHROMIUM &&
 
 
 HtmlRenderer.rendererPackageName = 'puppeteer-core';
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 (async () => {
     try {
         HtmlRenderer.launchOptions = {
@@ -84,6 +85,7 @@ HtmlRenderer.rendererPackageName = 'puppeteer-core';
 
 
 function ipc(eventName: string, fn: (arg: any, sender: WebContents) => any) {
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     ipcMain.on(eventName, async (event: any, arg: any) => {
         try {
             let ret = fn(arg, event.sender);
@@ -537,6 +539,7 @@ async function getStartupFile() {
 
 
 ipc('app:editor:openURL', arg => openURL(arg.url));
+// eslint-disable-next-line @typescript-eslint/require-await
 async function openURL(theUrl: string) {
     if (theUrl.match(/^https?:\/\//)) {
         const start = (process.platform === 'darwin' ? 'open' : process.platform === 'win32' ? 'start' : 'xdg-open');
@@ -548,6 +551,7 @@ async function openURL(theUrl: string) {
 
 
 ipc('app:editor:openNewWindow', arg => openNewWindow());
+// eslint-disable-next-line @typescript-eslint/require-await
 async function openNewWindow() {
     createMainWindow();
     return true;
