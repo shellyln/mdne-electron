@@ -202,7 +202,7 @@ function uniq<T>(arr: T[]) {
 
 function findChromeExecutables(folder: fs.PathLike) {
     const argumentsRegex = /(^[^ ]+).*/; // Take everything up to the first space
-    const chromeExecRegex = '^Exec=\/.*\/(google-chrome|chrome|chromium)-.*';
+    const chromeExecRegex = '^Exec=/.*/(google-chrome|chrome|chromium)-.*';
 
     const installations: string[] = [];
     if (canAccess(folder)) {
@@ -261,6 +261,7 @@ async function downloadChromium(options: CarloLaunchOptions, targetRevision?: st
 }
 
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export async function findChrome(options: CarloLaunchOptions) {
     if (options.executablePath) {
         return { executablePath: options.executablePath, type: 'user' };

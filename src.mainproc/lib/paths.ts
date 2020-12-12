@@ -21,25 +21,25 @@ let startupFilePath: string | undefined = process.argv[app.isPackaged ? 1 : 2];
 let lastSrcDir = '';
 
 
-export function getStartupFilePath() {
+export function getStartupFilePath(): string | undefined {
     return startupFilePath;
 }
 
-export function setStartupFilePath(p: string | undefined) {
+export function setStartupFilePath(p: string | undefined): string | undefined {
     startupFilePath = p;
     return startupFilePath;
 }
 
-export function getLastSrcPath() {
+export function getLastSrcPath(): string {
     return lastSrcDir;
 }
 
-export function setLastSrcPath(p: string) {
+export function setLastSrcPath(p: string): string {
     lastSrcDir = p;
     return lastSrcDir;
 }
 
-export function resetLastSrcPath() {
+export function resetLastSrcPath(): string {
     lastSrcDir = path.join(thisDirName, contentsRootDir);
     return lastSrcDir;
 }
@@ -48,7 +48,8 @@ export const tmpDir = path.normalize(path.join(os.tmpdir(), 'mdne-electron'));
 export const tmpOutDir = path.normalize(path.join(tmpDir, 'out'));
 
 // NOTE: BUG: electron 7 don't look automatically dynamic `/app.asar.unpacked/*` contents?
-export const toUnpackedPath = (p: string) => app.isPackaged ?
-    p.replace(/\/app.asar\//, '/app.asar.unpacked/') : p;
+export const toUnpackedPath: (p: string) => string =
+    (p: string) => app.isPackaged ?
+        p.replace(/\/app.asar\//, '/app.asar.unpacked/') : p;
 
 resetLastSrcPath();
