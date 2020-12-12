@@ -1,0 +1,17 @@
+{
+    "extends": [
+        "../.eslintrc.ts.shared.json"
+    ],
+    "env": {
+        "node": true,
+        "es6": true
+    },
+    "rules": {
+        "@typescript-eslint/no-unsafe-assignment": 0,
+        "@typescript-eslint/no-unsafe-member-access": 0,
+        "@typescript-eslint/no-unsafe-call": 0,
+        "@typescript-eslint/no-unsafe-return": 0,
+        "@typescript-eslint/restrict-template-expressions": 0,
+        "@typescript-eslint/prefer-regexp-exec": 0
+    }
+}

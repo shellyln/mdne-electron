@@ -1,6 +1,6 @@
 
 {
-    const { contextBridge, ipcRenderer} = require('electron');
+    const { contextBridge, ipcRenderer } = require('electron');
     const apiKey = require('crypto').randomBytes(128).toString('hex');
     let apiKeyCopy = apiKey;
 

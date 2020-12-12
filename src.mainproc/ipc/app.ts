@@ -67,7 +67,7 @@ HtmlRenderer.rendererPackageName = 'puppeteer-core';
         };
     } catch (e) {
         // Chrome browser is not available.
-        // tslint:disable-next-line:no-console
+        // eslint-disable-next-line no-console
         console.error(e);
 
         // retry
@@ -77,7 +77,7 @@ HtmlRenderer.rendererPackageName = 'puppeteer-core';
                 executablePath: (await findChrome(carloOptions)).executablePath,
             };
         } catch (e2) {
-            // tslint:disable-next-line:no-console
+            // eslint-disable-next-line no-console
             console.error(e2);
         }
     }
@@ -94,9 +94,9 @@ function ipc(eventName: string, fn: (arg: any, sender: WebContents) => any) {
             }
             event.sender.send(eventName, {succeeded: true, payload: ret});
         } catch (e) {
-            // tslint:disable-next-line:no-console
+            // eslint-disable-next-line no-console
             console.error(eventName);
-            // tslint:disable-next-line:no-console
+            // eslint-disable-next-line no-console
             console.error(e);
             event.sender.send(eventName, {succeeded: false, error: e.message});
         }
@@ -109,9 +109,9 @@ function ipcSync(eventName: string, fn: (arg: any, sender: WebContents) => any) 
         try {
             event.returnValue = fn(arg, event.sender);
         } catch (e) {
-            // tslint:disable-next-line:no-console
+            // eslint-disable-next-line no-console
             console.error(eventName);
-            // tslint:disable-next-line:no-console
+            // eslint-disable-next-line no-console
             console.error(e);
             event.returnValue = void 0;
         }
@@ -133,9 +133,9 @@ ipcMain.on('app:editor:toggleFullScreen', (event: any, arg: any) => {
             }
         }
     } catch (e) {
-        // tslint:disable-next-line:no-console
+        // eslint-disable-next-line no-console
         console.error('app:editor:toggleFullScreen');
-        // tslint:disable-next-line:no-console
+        // eslint-disable-next-line no-console
         console.error(e);
     }
 });
@@ -146,9 +146,9 @@ ipcMain.on('app:editor:notifyEditorDirty', (event: any, arg: any) => {
         const win = BrowserWindow.fromWebContents(event.sender);
         (win as any).editorIsDirty = arg.dirty;
     } catch (e) {
-        // tslint:disable-next-line:no-console
+        // eslint-disable-next-line no-console
         console.error('app:editor:notifyEditorDirty');
-        // tslint:disable-next-line:no-console
+        // eslint-disable-next-line no-console
         console.error(e);
     }
 });
@@ -283,7 +283,7 @@ async function nativeFileSaveDialog(sender: BrowserWindow | null, title: string,
 ipc('app:editor:renderByMenneu', arg =>
     renderByMenneu(arg.source, arg.data, arg.options, arg.srcPath, ...arg.exportPath));
 async function renderByMenneu(
-        source: string, data: object | string, options: any, srcPath: string, ...exportPath: string[]) {
+        source: string, data: Record<string, unknown> | string, options: any, srcPath: string, ...exportPath: string[]) {
 
     if (srcPath === null || srcPath === void 0) {
         srcPath = path.join(getDesktopPath(), 'H8f5iZPgOwtZoIN4');
@@ -431,7 +431,7 @@ async function listDirectoryImpl(dir: string): Promise<any> {
                 const s = await statAsync(path.join(dir, f));
                 isDir = s.isDirectory();
                 succeeded = true;
-            // tslint:disable-next-line:no-empty
+            // eslint-disable-next-line no-empty
             } catch (e) {}
             if (succeeded) {
                 fileInfos.push({

@@ -1,12 +1,13 @@
 {
     "extends": [
-        "./.eslintrc.js.shared.json"
+        "../.eslintrc.js.shared.json"
     ],
     "parserOptions": {
         "ecmaVersion": 9,
         "sourceType": "module"
     },
     "env": {
+        "browser": true,
         "es6": true
     },
     "globals": {
