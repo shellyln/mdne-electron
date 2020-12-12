@@ -47,6 +47,10 @@ export function getInputFormat(path) {
         return 'xml';
     case '.yaml': case '.yml':
         return 'yaml';
+    case '.toml':
+        return 'toml';
+    case '.ini':
+        return 'ini';
     case '.graphql': case '.gql':
         return 'graphql';
     case '.proto': case '.proto2': case '.proto3':
@@ -63,6 +67,10 @@ export function getInputFormat(path) {
         return 'rust';
     case '.py':
         return 'python';
+    case '.java':
+        return 'java';
+    case '.kt':
+        return 'kotlin';
     case '.r':
         return 'r';
     case '.sh':
@@ -143,6 +151,10 @@ export function getAceEditorMode(inputFormat) {
         return 'ace/mode/xml';
     case 'yaml':
         return 'ace/mode/yaml';
+    case 'toml':
+        return 'ace/mode/toml';
+    case 'ini':
+        return 'ace/mode/ini';
     case 'graphql':
         return 'ace/mode/graphqlshema';
     case 'protobuf':
@@ -159,6 +171,10 @@ export function getAceEditorMode(inputFormat) {
         return 'ace/mode/rust';
     case 'python':
         return 'ace/mode/python';
+    case 'java':
+        return 'ace/mode/java';
+    case 'kotlin':
+        return 'ace/mode/kotlin';
     case 'r':
         return 'ace/mode/r';
     case 'sh':

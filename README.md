@@ -23,10 +23,13 @@
   * Go
   * GraphQL
   * HTML
+  * INI
+  * Java
   * JavaScript
   * JSON
   * JSON5
   * JSX
+  * Kotlin
   * Latex
   * Less
   * Lisp
@@ -43,6 +46,7 @@
   * SQL
   * SVG
   * Tex
+  * TOML
   * TSX
   * TypeScript
   * XML
