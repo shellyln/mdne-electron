@@ -12,6 +12,7 @@ export default class SettingsDialog extends React.Component {
         this.state.showFields = false;
         this.state.fontFamily = void 0;
         this.state.fontSize = 14;
+        this.state.useSoftTabs = true,
         this.state.tabSize = 4;
         this.state.wrap = false;
         this.state.showInvisibles = false;
@@ -30,11 +31,12 @@ export default class SettingsDialog extends React.Component {
             showFields: false,
             fontFamily: options.editor.fontFamily,
             fontSize: options.editor.fontSize > 0 ? options.editor.fontSize : 14,
+            useSoftTabs: !!options.editor.useSoftTabs,
             tabSize: options.editor.tabSize,
             wrap: options.editor.wrap === 'off' ? false : (options.editor.wrap === 'free'),
             showInvisibles: !!options.editor.showInvisibles,
             theme: (options.editor.theme || '').replace('ace/theme/', ''),
-            darkThemePreview: options.renderer.darkThemePreview,
+            darkThemePreview: !!options.renderer.darkThemePreview,
         });
         setTimeout(() => this.setState({showFields: true}), 30);
     }
@@ -60,6 +62,12 @@ export default class SettingsDialog extends React.Component {
     handleTabSizeChange(ev) {
         this.setState({
             tabSize: Math.floor(Number(ev.target.value)),
+        });
+    }
+
+    handleSoftTabsChange(ev) {
+        this.setState({
+            useSoftTabs: ev.target.checked,
         });
     }
 
@@ -97,6 +105,7 @@ export default class SettingsDialog extends React.Component {
             editor: {
                 fontFamily: this.state.fontFamily,
                 fontSize: fontSize > 0 ? fontSize : 14,
+                useSoftTabs: this.state.useSoftTabs,
                 tabSize: this.state.tabSize > 0 ? this.state.tabSize : 4,
                 wrap: this.state.wrap,
                 showInvisibles: this.state.showInvisibles,
@@ -167,7 +176,14 @@ export default class SettingsDialog extends React.Component {
                                       (value ${this.state.tabSize})
                                       (onChange ${(ev) => this.handleTabSizeChange(ev)}) ))
                             (label (@ (for "appSettingsDialog-tabSize"))
-                                "Tab size") ))
+                                "Tab size") )
+                        (div (@ (className "input-field col s4"))
+                            (label
+                                (input (@ (type "checkbox")
+                                          (className "filled-in")
+                                          (checked ${this.state.useSoftTabs ? 'checked' : ''})
+                                          (onChange ${(ev) => this.handleSoftTabsChange(ev)}) ))
+                                (span "Soft tabs") )))
                     (div (@ (className "row")
                             (style (margin "0")) )
                         (div (@ (className "input-field col s4"))
