@@ -12,6 +12,7 @@
                 return k;
             },
             on: (key, channel, listener) => {
+                // NOTE: SECURITY WARNING: `listener(event, ...args)` can be accessible to `IpcRenderer`.
                 if (key !== apiKey) {
                     throw new Error('Denied');
                 }
@@ -27,6 +28,7 @@
                 if (key !== apiKey) {
                     throw new Error('Denied');
                 }
+                // TODO: Change to `ipcRenderer.invoke()` <-> `ipcMain.handle()`
                 return new Promise((resolve, reject) => {
                     ipcRenderer.send(eventName, params);
                     ipcRenderer.once(eventName, (event, arg) => {

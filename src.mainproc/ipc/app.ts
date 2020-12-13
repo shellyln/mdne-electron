@@ -84,6 +84,9 @@ HtmlRenderer.rendererPackageName = 'puppeteer-core';
 })();
 
 
+// TODO: Change to `ipcRenderer.invoke()` <-> `ipcMain.handle()`
+
+
 function ipc(eventName: string, fn: (arg: any, sender: WebContents) => any) {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     ipcMain.on(eventName, async (event: any, arg: any) => {
