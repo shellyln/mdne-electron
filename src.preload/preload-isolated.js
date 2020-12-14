@@ -12,11 +12,14 @@
                 return k;
             },
             on: (key, channel, listener) => {
-                // NOTE: SECURITY WARNING: `listener(event, ...args)` can be accessible to `IpcRenderer`.
                 if (key !== apiKey) {
                     throw new Error('Denied');
                 }
-                ipcRenderer.on(channel, listener);
+                ipcRenderer.on(channel, (evt, ...args) => {
+                    const send = (...params) => evt.sender.sendTo(evt.senderId, ...params);
+                    // NOTE: Don't pass `evt.ports`.
+                    listener({ send }, ...args);
+                });
             },
             send: (key, eventName, params) => {
                 if (key !== apiKey) {
