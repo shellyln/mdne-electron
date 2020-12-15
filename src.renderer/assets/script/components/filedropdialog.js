@@ -92,14 +92,17 @@ export default class FileDropDialog extends React.Component {
                     value: 'md',
                     text: 'Markdown (*.md, *.markdown)',
                     exts: ['.md', '.markdown'],
+                    mime: 'text/markdown',
                 },{
                     value: 'html',
                     text: 'HTML (*.html, *.htm)',
                     exts: ['.html', '.htm'],
+                    mime: 'text/html',
                 },{
                     value: '*',
                     text: 'All files (*.*)',
                     exts: [],
+                    mime: '*/*',
                 }],
             }, async (currentDir, fileName) => {
                 const path = await pathJoin(currentDir, fileName);

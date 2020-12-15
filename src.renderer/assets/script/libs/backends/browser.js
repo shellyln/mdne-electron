@@ -59,6 +59,47 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
 
     const welcomeFile = 'assets/data/welcome.md';
 
+    let nativeSaveFileHandle = null;
+
+    if (window.showOpenFilePicker) {
+        nativeFileOpenDialog_ = (async (title, defaultPath, filters) => {
+            try {
+                const [fileHandle] = await window.showOpenFilePicker({
+                    types: filters.map(x => ({
+                        description: x.name,
+                        accept: {
+                            [x.mime]: x.extensions.map(ext => `.${ext}`),
+                        },
+                    })),
+                });
+                nativeSaveFileHandle = fileHandle;
+                const file = await nativeSaveFileHandle.getFile();
+                return [file.name];
+            } catch (e) {
+                return void 0;
+            }
+        });
+    }
+
+    if (window.showSaveFilePicker) {
+        nativeFileSaveDialog_ = (async (title, defaultPath, filters) => {
+            try {
+                nativeSaveFileHandle = await window.showSaveFilePicker({
+                    types: filters.map(x => ({
+                        description: x.name,
+                        accept: {
+                            [x.mime]: x.extensions.map(ext => `.${ext}`),
+                        },
+                    })),
+                });
+                const file = await nativeSaveFileHandle.getFile();
+                return file.name;
+            } catch (e) {
+                return void 0;
+            }
+        });
+    }
+
     // eslint-disable-next-line no-unused-vars
     renderByMenneu_ = (async (source, data, options, srcPath, ...exportPath) => {
         const opts = Object.assign({}, options, {
@@ -102,18 +143,31 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
 
     // eslint-disable-next-line no-unused-vars
     loadFile_ = (async (...filePath) => {
-        // eslint-disable-next-line no-undef
-        const response = await fetch(welcomeFile);
-        return await response.text();
+        if (nativeSaveFileHandle) {
+            const file = await nativeSaveFileHandle.getFile();
+            return await file.text();
+        } else {
+            // eslint-disable-next-line no-undef
+            const response = await fetch(welcomeFile);
+            return await response.text();
+        }
     });
 
     // eslint-disable-next-line no-inner-declarations
     async function internalSaveFileEx(forExport, text, ...filePath) {
         const p = await pathJoin(...filePath);
         const b = await getBaseName(p);
+
         // eslint-disable-next-line no-undef
         const util = menneu.getAppEnv().RedAgateUtil;
-        await util.FileSaver.saveTextAs(b, text);
+
+        if (nativeSaveFileHandle) {
+            const writable = await nativeSaveFileHandle.createWritable();
+            await writable.write(text);
+            await writable.close();
+        } else {
+            await util.FileSaver.saveTextAs(b, text);
+        }
 
         if (!forExport) {
             try {
@@ -198,8 +252,10 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
         let dir = filePath;
         if (dir.lastIndexOf('/') !== -1) {
             dir = dir.substring(0, dir.lastIndexOf('/'));
-        }
-        if (dir === '') {
+            if (dir === '') {
+                dir = '/';
+            }
+        } else {
             dir = '/';
         }
         return dir;

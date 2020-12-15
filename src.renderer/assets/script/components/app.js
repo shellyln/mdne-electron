@@ -373,6 +373,7 @@ export default class App extends React.Component {
         // eslint-disable-next-line require-atomic-updates
         AppState.inputFormat = getInputFormat(AppState.filePath);
 
+        editor.session.setMode(getAceEditorMode(AppState.inputFormat));
         editor.session.getUndoManager().markClean();
         notifyEditorDirty(false);
         updateAppIndicatorBar();
@@ -391,14 +392,17 @@ export default class App extends React.Component {
                 value: 'md',
                 text: 'Markdown (*.md, *.markdown)',
                 exts: ['.md', '.markdown'],
+                mime: 'text/markdown',
             },{
                 value: 'html',
                 text: 'HTML (*.html, *.htm)',
                 exts: ['.html', '.htm'],
+                mime: 'text/html',
             },{
                 value: '*',
                 text: 'All files (*.*)',
                 exts: [],
+                mime: '*/*',
             }],
         }, async (currentDir, fileName) => {
             try {
@@ -455,15 +459,18 @@ export default class App extends React.Component {
                         value: 'pdf',
                         text: 'PDF (*.pdf)',
                         exts: ['.pdf'],
+                        mime: 'application/pdf',
                     }]),
                     [{
                         value: 'html',
                         text: 'HTML (*.html, *.htm)',
                         exts: ['.html', '.htm'],
+                        mime: 'text/html',
                     },{
                         value: '*',
                         text: 'All files (*.*)',
                         exts: [],
+                        mime: '*/*',
                     }]
                 ),
             }, async (currentDir, fileName) => {
