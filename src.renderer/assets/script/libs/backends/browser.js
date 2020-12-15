@@ -65,7 +65,7 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
         nativeFileOpenDialog_ = (async (title, defaultPath, filters) => {
             try {
                 const [fileHandle] = await window.showOpenFilePicker({
-                    types: filters.map(x => ({
+                    types: filters.filter(x => x.extensions.length && x.extensions[0] !== '*').map(x => ({
                         description: x.name,
                         accept: {
                             [x.mime]: x.extensions.map(ext => `.${ext}`),
@@ -85,7 +85,7 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
         nativeFileSaveDialog_ = (async (title, defaultPath, filters) => {
             try {
                 nativeSaveFileHandle = await window.showSaveFilePicker({
-                    types: filters.map(x => ({
+                    types: filters.filter(x => x.extensions.length && x.extensions[0] !== '*').map(x => ({
                         description: x.name,
                         accept: {
                             [x.mime]: x.extensions.map(ext => `.${ext}`),
@@ -156,20 +156,32 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
     // eslint-disable-next-line no-inner-declarations
     async function internalSaveFileEx(forExport, text, ...filePath) {
         const p = await pathJoin(...filePath);
-        const b = await getBaseName(p);
+        let b = await getBaseName(p);
 
         // eslint-disable-next-line no-undef
         const util = menneu.getAppEnv().RedAgateUtil;
 
-        if (nativeSaveFileHandle) {
-            const writable = await nativeSaveFileHandle.createWritable();
-            await writable.write(text);
-            await writable.close();
-        } else {
+        let saved = false;
+        if (window.showSaveFilePicker) {
+            if (! nativeSaveFileHandle) {
+                const fileName = await nativeFileSaveDialog('', '', []);
+                if (nativeSaveFileHandle && fileName) {
+                    b = fileName;
+                }
+            }
+            if (nativeSaveFileHandle) {
+                const writable = await nativeSaveFileHandle.createWritable();
+                await writable.write(text);
+                await writable.close();
+                saved = true;
+            }
+        }
+        if (! saved) {
+            // Fallback
             await util.FileSaver.saveTextAs(b, text);
         }
 
-        if (!forExport) {
+        if (! forExport) {
             try {
                 // eslint-disable-next-line require-atomic-updates, no-undef
                 window.location.hash = `filename=${encodeURIComponent(b)}&open.d=${util.Base64.encode(pako.deflate(
