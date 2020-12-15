@@ -50,6 +50,18 @@ const additionalContentStyles = `
 `;
 
 
+function convertFileFilters(filters) {
+    return (filters
+            .filter(x => x.extensions.length && x.extensions[0] !== '*')
+            .map(x => ({
+        description: x.name,
+        accept: {
+            [x.mime]: x.extensions.map(ext => `.${ext}`),
+        },
+    })));
+}
+
+
 if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATION') {
     // Fallback (for Browser)
 
@@ -65,12 +77,7 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
         nativeFileOpenDialog_ = (async (title, defaultPath, filters) => {
             try {
                 const [fileHandle] = await window.showOpenFilePicker({
-                    types: filters.filter(x => x.extensions.length && x.extensions[0] !== '*').map(x => ({
-                        description: x.name,
-                        accept: {
-                            [x.mime]: x.extensions.map(ext => `.${ext}`),
-                        },
-                    })),
+                    types: convertFileFilters(filters),
                 });
                 nativeSaveFileHandle = fileHandle;
                 const file = await nativeSaveFileHandle.getFile();
@@ -85,12 +92,7 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
         nativeFileSaveDialog_ = (async (title, defaultPath, filters) => {
             try {
                 nativeSaveFileHandle = await window.showSaveFilePicker({
-                    types: filters.filter(x => x.extensions.length && x.extensions[0] !== '*').map(x => ({
-                        description: x.name,
-                        accept: {
-                            [x.mime]: x.extensions.map(ext => `.${ext}`),
-                        },
-                    })),
+                    types: convertFileFilters(filters),
                 });
                 const file = await nativeSaveFileHandle.getFile();
                 return file.name;
@@ -161,10 +163,12 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
         // eslint-disable-next-line no-undef
         const util = menneu.getAppEnv().RedAgateUtil;
 
+        const modFilters = await import('../filefilters')
+
         let saved = false;
         if (window.showSaveFilePicker) {
             if (! nativeSaveFileHandle) {
-                const fileName = await nativeFileSaveDialog('', '', []);
+                const fileName = await nativeFileSaveDialog('', '', modFilters.saveAsFilter);
                 if (nativeSaveFileHandle && fileName) {
                     p = b = fileName;
                 }

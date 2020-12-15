@@ -12,6 +12,7 @@ import AppState,
        { updateAppIndicatorBar } from '../libs/appstate.js';
 import { getInputFormat,
          getAceEditorMode }      from '../libs/modes.js';
+import { openFilter }            from '../libs/filefilters';
 
 
 
@@ -88,22 +89,7 @@ export default class FileDropDialog extends React.Component {
                 title: 'Open',
                 currentAceId: this.options.aceId,
                 currentFilePath: AppState.filePath,
-                fileTypes: [{
-                    value: 'md',
-                    text: 'Markdown (*.md, *.markdown)',
-                    exts: ['.md', '.markdown'],
-                    mime: 'text/markdown',
-                },{
-                    value: 'html',
-                    text: 'HTML (*.html, *.htm)',
-                    exts: ['.html', '.htm'],
-                    mime: 'text/html',
-                },{
-                    value: '*',
-                    text: 'All files (*.*)',
-                    exts: [],
-                    mime: '*/*',
-                }],
+                fileTypes: openFilter,
             }, async (currentDir, fileName) => {
                 const path = await pathJoin(currentDir, fileName);
                 const text = await loadFile(path);

@@ -19,6 +19,8 @@ import { getInputFormat,
          getAceEditorMode }      from '../libs/modes.js';
 import { escapeHtml }            from '../libs/escape.js';
 import commandRunner             from '../libs/cmdrunner.js';
+import { saveAsFilter,
+         exportFilter }          from '../libs/filefilters';
 
 import { getSuggests as getAppSuggests,
          getOperators as getAppOperators }  from '../libs/commands/app.js';
@@ -388,22 +390,7 @@ export default class App extends React.Component {
             currentAceId: this.state.currentAceId,
             currentFilePath: AppState.filePath,
             forExport: false,
-            fileTypes: [{
-                value: 'md',
-                text: 'Markdown (*.md, *.markdown)',
-                exts: ['.md', '.markdown'],
-                mime: 'text/markdown',
-            },{
-                value: 'html',
-                text: 'HTML (*.html, *.htm)',
-                exts: ['.html', '.htm'],
-                mime: 'text/html',
-            },{
-                value: '*',
-                text: 'All files (*.*)',
-                exts: [],
-                mime: '*/*',
-            }],
+            fileTypes: saveAsFilter,
         }, async (currentDir, fileName) => {
             try {
                 await this.fileSaveAs(currentDir, fileName);
@@ -454,25 +441,7 @@ export default class App extends React.Component {
                 currentAceId: this.state.currentAceId,
                 currentFilePath: AppState.filePath,
                 forExport: true,
-                fileTypes: [].concat(
-                    (window._MDNE_BACKEND_CAPS_NO_PDF_RENDERER ? [] : [{
-                        value: 'pdf',
-                        text: 'PDF (*.pdf)',
-                        exts: ['.pdf'],
-                        mime: 'application/pdf',
-                    }]),
-                    [{
-                        value: 'html',
-                        text: 'HTML (*.html, *.htm)',
-                        exts: ['.html', '.htm'],
-                        mime: 'text/html',
-                    },{
-                        value: '*',
-                        text: 'All files (*.*)',
-                        exts: [],
-                        mime: '*/*',
-                    }]
-                ),
+                fileTypes: exportFilter,
             }, async (currentDir, fileName) => {
                 try {
                     await this.fileExport(currentDir, fileName);
