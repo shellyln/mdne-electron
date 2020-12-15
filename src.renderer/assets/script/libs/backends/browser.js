@@ -155,7 +155,7 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
 
     // eslint-disable-next-line no-inner-declarations
     async function internalSaveFileEx(forExport, text, ...filePath) {
-        const p = await pathJoin(...filePath);
+        let p = await pathJoin(...filePath);
         let b = await getBaseName(p);
 
         // eslint-disable-next-line no-undef
@@ -166,7 +166,7 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
             if (! nativeSaveFileHandle) {
                 const fileName = await nativeFileSaveDialog('', '', []);
                 if (nativeSaveFileHandle && fileName) {
-                    b = fileName;
+                    p = b = fileName;
                 }
             }
             if (nativeSaveFileHandle) {
@@ -264,11 +264,8 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
         let dir = filePath;
         if (dir.lastIndexOf('/') !== -1) {
             dir = dir.substring(0, dir.lastIndexOf('/'));
-            if (dir === '') {
-                dir = '/';
-            }
         } else {
-            dir = '/';
+            dir = '';
         }
         return dir;
     });
