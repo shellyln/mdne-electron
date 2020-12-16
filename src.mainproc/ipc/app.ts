@@ -10,7 +10,8 @@ import   util                      from 'util';
 import { HtmlRenderer }            from 'red-agate/modules/red-agate/renderer';
 import   requireDynamic            from 'red-agate-util/modules/runtime/require-dynamic';
 import { render,
-         getAppEnv }               from 'menneu/modules';
+         getAppEnv,
+         CliConfig }           from 'menneu/modules';
 import { ipcMain,
          dialog,
          BrowserWindow,
@@ -89,7 +90,7 @@ HtmlRenderer.rendererPackageName = 'puppeteer-core';
 
 function ipc(eventName: string, fn: (arg: any, sender: WebContents) => any) {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    ipcMain.on(eventName, async (event: any, arg: any) => {
+    ipcMain.on(eventName, async (event, arg: any) => {
         try {
             let ret = fn(arg, event.sender);
             if (ret instanceof Promise) {
@@ -108,7 +109,7 @@ function ipc(eventName: string, fn: (arg: any, sender: WebContents) => any) {
 
 
 function ipcSync(eventName: string, fn: (arg: any, sender: WebContents) => any) {
-    ipcMain.on(eventName, (event: any, arg: any) => {
+    ipcMain.on(eventName, (event, arg: any) => {
         try {
             event.returnValue = fn(arg, event.sender);
         } catch (e) {
@@ -127,7 +128,7 @@ function getDesktopPath() {
 }
 
 
-ipcMain.on('app:editor:toggleFullScreen', (event: any, arg: any) => {
+ipcMain.on('app:editor:toggleFullScreen', (event, arg: any) => {
     try {
         if (arg.force || app.isPackaged) {
             const win = BrowserWindow.fromWebContents(event.sender);
@@ -144,7 +145,7 @@ ipcMain.on('app:editor:toggleFullScreen', (event: any, arg: any) => {
 });
 
 
-ipcMain.on('app:editor:notifyEditorDirty', (event: any, arg: any) => {
+ipcMain.on('app:editor:notifyEditorDirty', (event, arg: any) => {
     try {
         const win = BrowserWindow.fromWebContents(event.sender);
         (win as any).editorIsDirty = arg.dirty;
@@ -286,7 +287,7 @@ async function nativeFileSaveDialog(sender: BrowserWindow | null, title: string,
 ipc('app:editor:renderByMenneu', arg =>
     renderByMenneu(arg.source, arg.data, arg.options, arg.srcPath, ...arg.exportPath));
 async function renderByMenneu(
-        source: string, data: Record<string, unknown> | string, options: any, srcPath: string, ...exportPath: string[]) {
+        source: string, data: Record<string, unknown> | string, options: CliConfig, srcPath: string, ...exportPath: string[]) {
 
     if (srcPath === null || srcPath === void 0) {
         srcPath = path.join(getDesktopPath(), 'H8f5iZPgOwtZoIN4');
@@ -294,7 +295,7 @@ async function renderByMenneu(
     const srcDir = path.dirname(srcPath);
     const srcBaseName = path.basename(srcPath).slice(0, -(path.extname(srcPath).length));
 
-    let cf = null;
+    let cf: CliConfig | null = null;
     if (! cf) {
         const fileName = path.join(srcDir, srcBaseName + '.config.json');
         if (fs.existsSync(fileName)) {
@@ -305,9 +306,12 @@ async function renderByMenneu(
     if (! cf) {
         const fileName = path.join(srcDir, srcBaseName + '.config.js');
         if (fs.existsSync(fileName)) {
-            cf = requireDynamic(fileName);
-            if (typeof cf === 'function') {
-                cf = cf(getAppEnv());
+            const mod = requireDynamic(fileName);
+            if (typeof mod === 'function') {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                cf = mod(getAppEnv());
+            } else {
+                cf = mod;
             }
         }
     }
@@ -321,31 +325,37 @@ async function renderByMenneu(
     if (! cf) {
         const fileName = path.join(srcDir, 'menneu.config.js');
         if (fs.existsSync(fileName)) {
-            cf = requireDynamic(fileName);
-            if (typeof cf === 'function') {
-                cf = cf(getAppEnv());
+            const mod = requireDynamic(fileName);
+            if (typeof mod === 'function') {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                cf = mod(getAppEnv());
+            } else {
+                cf = mod;
             }
         }
     }
-    cf = Object.assign({}, cf || {});
+    cf = Object.assign({}, cf || {}) as any;
 
     let d = data;
     if (! d) {
         const fileName = path.join(srcDir, srcBaseName + '.data.lisp');
         if (fs.existsSync(fileName)) {
             d = await readFileAsync(fileName, { encoding: 'utf8' });
-            cf.dataFormat = 'lisp';
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            cf!.dataFormat = 'lisp';
         }
     }
     if (! d) {
         const fileName = path.join(srcDir, srcBaseName + '.data.json');
         if (fs.existsSync(fileName)) {
             d = await readFileAsync(fileName, { encoding: 'utf8' });
-            cf.dataFormat = 'json';
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            cf!.dataFormat = 'json';
         }
     }
 
-    cf.tempDir = srcDir;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    cf!.tempDir = srcDir;
     let buf = null;
     try {
         // TODO: This has concurrency issue.
