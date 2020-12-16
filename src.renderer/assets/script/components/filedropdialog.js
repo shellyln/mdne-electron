@@ -98,7 +98,6 @@ export default class FileDropDialog extends React.Component {
             });
         } catch (e) {
             await alertWrap(e);
-            // eslint-disable-next-line require-atomic-updates
             AppState.filePath = null;
             notifyEditorDirty(false);
             updateAppIndicatorBar();

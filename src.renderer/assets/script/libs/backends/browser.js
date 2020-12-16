@@ -120,7 +120,6 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
             throw new Error(errText);
         }
 
-        // eslint-disable-next-line no-undef
         const buf = await menneu.render(source, {}, opts);
         let bufStr = buf.toString();
         if (exportPath.length === 0) {
@@ -131,7 +130,6 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
         //       To avoid cross-origin, use Blob URLs instead.
         // const resultUrl = 'data:text/html;base64,' + menneu.getAppEnv().RedAgateUtil.Base64.encode(buf);
 
-        // eslint-disable-next-line no-undef
         const resultUrl = URL.createObjectURL(new Blob([bufStr], { type: 'text/html' }));
 
         if (exportPath.length > 0) {
@@ -149,7 +147,6 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
             const file = await nativeSaveFileHandle.getFile();
             return await file.text();
         } else {
-            // eslint-disable-next-line no-undef
             const response = await fetch(welcomeFile);
             return await response.text();
         }
@@ -160,7 +157,6 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
         let p = await pathJoin(...filePath);
         let b = await getBaseName(p);
 
-        // eslint-disable-next-line no-undef
         const util = menneu.getAppEnv().RedAgateUtil;
 
         const modFilters = await import('../filefilters')
@@ -191,7 +187,6 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
 
         if (! forExport) {
             try {
-                // eslint-disable-next-line require-atomic-updates, no-undef
                 window.location.hash = `filename=${encodeURIComponent(b)}&open.d=${util.Base64.encode(pako.deflate(
                     util.TextEncoding.encodeToUtf8(text)))
                     .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')}`;
@@ -286,7 +281,6 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
     getStartupFile_ = (async () => {
         let targetPath = 'Welcome.md';
         let targetUrl = welcomeFile;
-        // eslint-disable-next-line no-undef
         const util = menneu.getAppEnv().RedAgateUtil;
 
         if (window.location.hash) {
@@ -299,7 +293,6 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
                 if (result['open.d']) {
                     targetPath = result['filename'] || 'Untitled.md';
                     try {
-                        // eslint-disable-next-line no-undef
                         targetUrl = `data:text/plain;base64,${util.Base64.encode(pako.inflate(
                             util.Base64.decode(
                                 result['open.d'].replace(/-/g, '+').replace(/_/g, '/'))))}`;
@@ -318,7 +311,6 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
                 targetUrl = `data:text/plain,`;
             }
         }
-        // eslint-disable-next-line no-undef
         const response = await fetch(targetUrl, {});
         if (response.ok) {
             return {
@@ -404,7 +396,6 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
         }),
         fileInfo: (async (file) => {
             const promise = new Promise((resolve, reject) => {
-                // eslint-disable-next-line no-undef
                 const reader = new FileReader();
                 // eslint-disable-next-line no-unused-vars
                 reader.onload = ev => {

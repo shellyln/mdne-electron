@@ -37,9 +37,7 @@ export default class AceEditor extends React.Component {
                         // NOTE: In the browser backend, the filepath and filename may change on the first save.
 
                         const fileInfo = await saveFile(editor.getValue(), AppState.filePath);
-                        // eslint-disable-next-line require-atomic-updates
                         AppState.filePath = fileInfo.path;
-                        // eslint-disable-next-line require-atomic-updates
                         AppState.inputFormat = getInputFormat(AppState.filePath);
 
                         editor.session.setMode(getAceEditorMode(AppState.inputFormat));

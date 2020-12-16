@@ -122,13 +122,11 @@ export default class App extends React.Component {
                 ),
             });
         }
-        // eslint-disable-next-line no-undef
         if (window.dialogPolyfill) {
             // initialize polyfill emulated elements
             const dialogs = document.querySelectorAll('dialog');
             for (let i = 0; i < dialogs.length; i++) {
                 const dialog = dialogs[i];
-                // eslint-disable-next-line no-undef
                 dialogPolyfill.registerDialog(dialog);
             }
         }
