@@ -43,7 +43,7 @@ export function createMainWindow(): electron.BrowserWindow {
 
     // CSP is not work while the location scheme is 'file'.
     // And when if navigated to http/https, CSP is to be enabled.
-    mainWindow.webContents.session.webRequest.onHeadersReceived((details: any, callback: any) => {
+    mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
         if (details.url.match(/^https?:\/\//)) {
             const headers = {...details.responseHeaders};
             for (const key of Object.keys(headers)) {
@@ -121,7 +121,7 @@ export function createMainWindow(): electron.BrowserWindow {
         mainWindow = null;
     });
 
-    mainWindow.webContents.on('new-window', (event: any, url: string) => {
+    mainWindow.webContents.on('new-window', (event, url) => {
         event.preventDefault();
         if (url.match(/^https?:\/\//)) {
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -129,7 +129,7 @@ export function createMainWindow(): electron.BrowserWindow {
         }
     });
 
-    mainWindow.webContents.on('will-navigate', (event: any, url: string) => {
+    mainWindow.webContents.on('will-navigate', (event, url) => {
         // NOTE: Protect from `target="_top"` navigation links in the iframe.
         event.preventDefault();
     });

@@ -19,6 +19,8 @@ import { getInputFormat,
          getAceEditorMode }      from '../libs/modes.js';
 import { escapeHtml }            from '../libs/escape.js';
 import commandRunner             from '../libs/cmdrunner.js';
+import { saveAsFilter,
+         exportFilter }          from '../libs/filefilters';
 
 import { getSuggests as getAppSuggests,
          getOperators as getAppOperators }  from '../libs/commands/app.js';
@@ -120,13 +122,11 @@ export default class App extends React.Component {
                 ),
             });
         }
-        // eslint-disable-next-line no-undef
         if (window.dialogPolyfill) {
             // initialize polyfill emulated elements
             const dialogs = document.querySelectorAll('dialog');
             for (let i = 0; i < dialogs.length; i++) {
                 const dialog = dialogs[i];
-                // eslint-disable-next-line no-undef
                 dialogPolyfill.registerDialog(dialog);
             }
         }
@@ -373,6 +373,7 @@ export default class App extends React.Component {
         // eslint-disable-next-line require-atomic-updates
         AppState.inputFormat = getInputFormat(AppState.filePath);
 
+        editor.session.setMode(getAceEditorMode(AppState.inputFormat));
         editor.session.getUndoManager().markClean();
         notifyEditorDirty(false);
         updateAppIndicatorBar();
@@ -387,19 +388,7 @@ export default class App extends React.Component {
             currentAceId: this.state.currentAceId,
             currentFilePath: AppState.filePath,
             forExport: false,
-            fileTypes: [{
-                value: 'md',
-                text: 'Markdown (*.md, *.markdown)',
-                exts: ['.md', '.markdown'],
-            },{
-                value: 'html',
-                text: 'HTML (*.html, *.htm)',
-                exts: ['.html', '.htm'],
-            },{
-                value: '*',
-                text: 'All files (*.*)',
-                exts: [],
-            }],
+            fileTypes: saveAsFilter,
         }, async (currentDir, fileName) => {
             try {
                 await this.fileSaveAs(currentDir, fileName);
@@ -450,22 +439,7 @@ export default class App extends React.Component {
                 currentAceId: this.state.currentAceId,
                 currentFilePath: AppState.filePath,
                 forExport: true,
-                fileTypes: [].concat(
-                    (window._MDNE_BACKEND_CAPS_NO_PDF_RENDERER ? [] : [{
-                        value: 'pdf',
-                        text: 'PDF (*.pdf)',
-                        exts: ['.pdf'],
-                    }]),
-                    [{
-                        value: 'html',
-                        text: 'HTML (*.html, *.htm)',
-                        exts: ['.html', '.htm'],
-                    },{
-                        value: '*',
-                        text: 'All files (*.*)',
-                        exts: [],
-                    }]
-                ),
+                fileTypes: exportFilter,
             }, async (currentDir, fileName) => {
                 try {
                     await this.fileExport(currentDir, fileName);

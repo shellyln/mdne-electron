@@ -11,18 +11,15 @@
         "es6": true
     },
     "globals": {
-        "SharedArrayBuffer": true,
-        "Atomics": true,
-        "window": true,
-        "document": true,
         "M": true,
         "ace": true,
+        "dialogPolyfill": true,
         "React": true,
         "ReactDOM": true,
         "liyad": true,
         "lsx": true,
-        "alert": true,
-        "confirm": true,
+        "menneu": true,
+        "pako": true,
         "mdneApi": true
     },
     "rules": {

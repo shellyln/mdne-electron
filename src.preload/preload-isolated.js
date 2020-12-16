@@ -7,6 +7,7 @@
     contextBridge.exposeInMainWorld(
         'mdneApi', {
             getKey: () => {
+                // NOTE: Protect from iframe user contents. `parent.window.mdneApi.*` are callable from iframe. 
                 const k = apiKeyCopy;
                 apiKeyCopy = null;
                 return k;

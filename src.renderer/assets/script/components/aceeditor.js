@@ -8,6 +8,8 @@ import { notifyEditorDirty,
          alertWrap }             from '../libs/backend-wrap.js';
 import AppState,
        { updateAppIndicatorBar } from '../libs/appstate.js';
+import { getInputFormat,
+         getAceEditorMode }      from '../libs/modes.js';
 
 
 
@@ -32,7 +34,13 @@ export default class AceEditor extends React.Component {
             exec: async (editor) => {
                 if (AppState.filePath) {
                     try {
-                        await saveFile(editor.getValue(), AppState.filePath);
+                        // NOTE: In the browser backend, the filepath and filename may change on the first save.
+
+                        const fileInfo = await saveFile(editor.getValue(), AppState.filePath);
+                        AppState.filePath = fileInfo.path;
+                        AppState.inputFormat = getInputFormat(AppState.filePath);
+
+                        editor.session.setMode(getAceEditorMode(AppState.inputFormat));
                         editor.session.getUndoManager().markClean();
                         notifyEditorDirty(false);
                         updateAppIndicatorBar();

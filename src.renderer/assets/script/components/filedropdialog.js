@@ -12,6 +12,7 @@ import AppState,
        { updateAppIndicatorBar } from '../libs/appstate.js';
 import { getInputFormat,
          getAceEditorMode }      from '../libs/modes.js';
+import { openFilter }            from '../libs/filefilters';
 
 
 
@@ -58,12 +59,16 @@ export default class FileDropDialog extends React.Component {
         ev.preventDefault();
     }
 
+    /**
+     * @param {DragEvent} ev 
+     */
     async handleOnDrop(ev) {
         try {
             ev.preventDefault();
             const files = [];
             for (let i = 0; i < ev.dataTransfer.files.length; i++) {
                 files.push(carlo.fileInfo(ev.dataTransfer.files[i]));
+                break; // Only use first item
             }
             const paths = await Promise.all(files);
             const texts = await Promise.all(
@@ -88,19 +93,7 @@ export default class FileDropDialog extends React.Component {
                 title: 'Open',
                 currentAceId: this.options.aceId,
                 currentFilePath: AppState.filePath,
-                fileTypes: [{
-                    value: 'md',
-                    text: 'Markdown (*.md, *.markdown)',
-                    exts: ['.md', '.markdown'],
-                },{
-                    value: 'html',
-                    text: 'HTML (*.html, *.htm)',
-                    exts: ['.html', '.htm'],
-                },{
-                    value: '*',
-                    text: 'All files (*.*)',
-                    exts: [],
-                }],
+                fileTypes: openFilter,
             }, async (currentDir, fileName) => {
                 const path = await pathJoin(currentDir, fileName);
                 const text = await loadFile(path);
@@ -109,7 +102,6 @@ export default class FileDropDialog extends React.Component {
             });
         } catch (e) {
             await alertWrap(e);
-            // eslint-disable-next-line require-atomic-updates
             AppState.filePath = null;
             notifyEditorDirty(false);
             updateAppIndicatorBar();

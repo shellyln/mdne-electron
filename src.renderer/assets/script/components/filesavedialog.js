@@ -64,6 +64,7 @@ export default class FileSaveDialog extends React.Component {
                     options.fileTypes.map(x => ({
                         name: x.text,
                         extensions: x.exts && x.exts.length > 0 ? x.exts.map(t => t.slice(1)) : ['*'],
+                        mime: x.mime,
                     })));
                 if (fileName) {
                     this.handler(await getDirName(fileName), await getBaseName(fileName));
