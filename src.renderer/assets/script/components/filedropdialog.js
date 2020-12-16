@@ -59,12 +59,16 @@ export default class FileDropDialog extends React.Component {
         ev.preventDefault();
     }
 
+    /**
+     * @param {DragEvent} ev 
+     */
     async handleOnDrop(ev) {
         try {
             ev.preventDefault();
             const files = [];
             for (let i = 0; i < ev.dataTransfer.files.length; i++) {
                 files.push(carlo.fileInfo(ev.dataTransfer.files[i]));
+                break; // Only use first item
             }
             const paths = await Promise.all(files);
             const texts = await Promise.all(

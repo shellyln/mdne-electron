@@ -71,7 +71,7 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
 
     const welcomeFile = 'assets/data/welcome.md';
 
-    // TODO: Clear it if new file is dropped to the fileDropDialog
+    /** @type {FileSystemFileHandle | null} */
     let nativeSaveFileHandle = null;
 
     if (window.showOpenFilePicker) {
@@ -392,11 +392,20 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
     };
 
     carlo_ = {
+        /** @type {() => Promise<Backend[]>} */
         loadParams: (async () => {
             return [backend_];
         }),
+        /**
+         * @type {(file: File) => Promise<{path: string, fileBodyText: string}>}
+         * File is dropped.
+         * Get the file info and content.
+         */
         fileInfo: (async (file) => {
             const promise = new Promise((resolve, reject) => {
+                // Reset the opened file's handler
+                nativeSaveFileHandle = null;
+
                 const reader = new FileReader();
                 // eslint-disable-next-line no-unused-vars
                 reader.onload = ev => {
