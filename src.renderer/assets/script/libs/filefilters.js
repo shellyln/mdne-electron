@@ -9,12 +9,12 @@ export const openFilter = [{
     text: 'Markdown (*.md, *.markdown)',
     exts: ['.md', '.markdown'],
     mime: 'text/markdown',
-},{
+}, {
     value: 'html',
     text: 'HTML (*.html, *.htm)',
     exts: ['.html', '.htm'],
     mime: 'text/html',
-},{
+}, {
     value: '*',
     text: 'All Files (*.*)',
     exts: [],
@@ -27,12 +27,7 @@ export const saveAsFilter = [{
     text: 'Markdown (*.md, *.markdown)',
     exts: ['.md', '.markdown'],
     mime: 'text/markdown',
-},{
-    value: 'html',
-    text: 'HTML (*.html, *.htm)',
-    exts: ['.html', '.htm'],
-    mime: 'text/html',
-},{
+}, {
     value: '*',
     text: 'All Files (*.*)',
     exts: [],
@@ -52,7 +47,7 @@ export const exportFilter = [].concat(
         text: 'HTML (*.html, *.htm)',
         exts: ['.html', '.htm'],
         mime: 'text/html',
-    },{
+    }, {
         value: '*',
         text: 'All Files (*.*)',
         exts: [],

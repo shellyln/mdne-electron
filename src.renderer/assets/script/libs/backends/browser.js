@@ -71,6 +71,7 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
 
     const welcomeFile = 'assets/data/welcome.md';
 
+    // TODO: Clear it if new file is dropped to the fileDropDialog
     let nativeSaveFileHandle = null;
 
     if (window.showOpenFilePicker) {
