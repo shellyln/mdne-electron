@@ -168,7 +168,11 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
         let saved = false;
         if (window.showSaveFilePicker) {
             if (! nativeSaveFileHandle) {
-                const fileName = await nativeFileSaveDialog('', '', modFilters.saveAsFilter);
+                const fileName = await nativeFileSaveDialog('', '', modFilters.saveAsFilter.map(x => ({
+                    name: x.text,
+                    extensions: x.exts && x.exts.length > 0 ? x.exts.map(t => t.slice(1)) : ['*'],
+                    mime: x.mime,
+                })));
                 if (nativeSaveFileHandle && fileName) {
                     p = b = fileName;
                 }
