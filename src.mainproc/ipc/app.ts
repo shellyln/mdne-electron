@@ -422,7 +422,14 @@ async function saveFile(text: string, ...filePath: string[]) {
 }
 
 
-async function listDirectoryImpl(dir: string): Promise<any> {
+type FileInfo = {
+    name: string;
+    path?: string;
+    isDirectory: boolean;
+};
+
+
+async function listDirectoryImpl(dir: string): Promise<{directory: string, files: FileInfo[]}> {
     if (typeof dir !== 'string') {
         throw new Error('directory name is not specified');
     }
@@ -436,7 +443,7 @@ async function listDirectoryImpl(dir: string): Promise<any> {
     }
     if (stat.isDirectory()) {
         const files = await readdirAsync(dir);
-        const fileInfos = [];
+        const fileInfos: FileInfo[] = [];
         for (const f of files) {
             let isDir = false;
             let succeeded = false;
