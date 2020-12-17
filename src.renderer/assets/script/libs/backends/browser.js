@@ -86,6 +86,7 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
                 const file = await nativeSaveFileHandle.getFile();
                 return [file.name];
             } catch (e) {
+                // Cancelled or failed
                 return void 0;
             }
         });
@@ -95,6 +96,7 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
         /** @type {(title: string, defaultPath: string, filters: any, intent: 'saveas' | 'export') => string | undefined} */
         nativeFileSaveDialog_ = (async (title, defaultPath, filters, intent) => {
             try {
+                // NOTE: The existing file is cleared before this method returned if method is succeeded.
                 const handle = await window.showSaveFilePicker({
                     types: convertFileFilters(filters),
                 });
@@ -109,6 +111,7 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
                 }
                 return file.name;
             } catch (e) {
+                // Cancelled or failed
                 return void 0;
             }
         });
