@@ -389,6 +389,7 @@ export default class App extends React.Component {
             currentFilePath: AppState.filePath,
             forExport: false,
             fileTypes: saveAsFilter,
+            intent: 'saveas',
         }, async (currentDir, fileName) => {
             try {
                 await this.fileSaveAs(currentDir, fileName);
@@ -440,6 +441,7 @@ export default class App extends React.Component {
                 currentFilePath: AppState.filePath,
                 forExport: true,
                 fileTypes: exportFilter,
+                intent: 'export',
             }, async (currentDir, fileName) => {
                 try {
                     await this.fileExport(currentDir, fileName);

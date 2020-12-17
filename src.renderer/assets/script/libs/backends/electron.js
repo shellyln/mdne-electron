@@ -78,7 +78,8 @@ if (window._MDNE_BACKEND_TYPE === 'ELECTRON_IPC') {
         });
     });
 
-    nativeFileSaveDialog_ = (async (title, defaultPath, filters) => {
+    // eslint-disable-next-line no-unused-vars
+    nativeFileSaveDialog_ = (async (title, defaultPath, filters, intent) => {
         return await mdneApi.ipc(apiKey, 'app:editor:nativeFileSaveDialog', {
             title,
             defaultPath,

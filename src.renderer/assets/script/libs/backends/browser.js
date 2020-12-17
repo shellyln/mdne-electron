@@ -73,6 +73,8 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
 
     /** @type {FileSystemFileHandle | null} */
     let nativeSaveFileHandle = null;
+    /** @type {FileSystemFileHandle | null} */
+    let nativeExportFileHandle = null;
 
     if (window.showOpenFilePicker) {
         nativeFileOpenDialog_ = (async (title, defaultPath, filters) => {
@@ -90,12 +92,21 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
     }
 
     if (window.showSaveFilePicker) {
-        nativeFileSaveDialog_ = (async (title, defaultPath, filters) => {
+        /** @type {(title: string, defaultPath: string, filters: any, intent: 'saveas' | 'export') => string | undefined} */
+        nativeFileSaveDialog_ = (async (title, defaultPath, filters, intent) => {
             try {
-                nativeSaveFileHandle = await window.showSaveFilePicker({
+                const handle = await window.showSaveFilePicker({
                     types: convertFileFilters(filters),
                 });
-                const file = await nativeSaveFileHandle.getFile();
+                const file = await handle.getFile();
+                switch (intent) {
+                case 'saveas':
+                    nativeSaveFileHandle = handle;
+                    break;
+                case 'export':
+                    nativeExportFileHandle = handle;
+                    break;
+                }
                 return file.name;
             } catch (e) {
                 return void 0;
@@ -160,27 +171,36 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
 
         const util = menneu.getAppEnv().RedAgateUtil;
 
-        const modFilters = await import('../filefilters')
+        const modFilters = await import('../filefilters');
 
+        let handle = forExport ? nativeExportFileHandle : nativeSaveFileHandle;
         let saved = false;
+
         if (window.showSaveFilePicker) {
-            if (! nativeSaveFileHandle) {
+            if (! handle) {
                 const fileName = await nativeFileSaveDialog('', '', modFilters.saveAsFilter.map(x => ({
                     name: x.text,
                     extensions: x.exts && x.exts.length > 0 ? x.exts.map(t => t.slice(1)) : ['*'],
                     mime: x.mime,
-                })));
-                if (nativeSaveFileHandle && fileName) {
+                })), forExport ? 'export' : 'saveas');
+
+                handle = forExport ? nativeExportFileHandle : nativeSaveFileHandle;
+
+                if (handle && fileName) {
                     p = b = fileName;
                 }
             }
-            if (nativeSaveFileHandle) {
-                const writable = await nativeSaveFileHandle.createWritable();
+            if (handle) {
+                const writable = await handle.createWritable();
                 await writable.write(text);
                 await writable.close();
                 saved = true;
             }
+            if (forExport) {
+                nativeExportFileHandle = null;
+            }
         }
+
         if (! saved) {
             // Fallback
             await util.FileSaver.saveTextAs(b, text);
