@@ -18,6 +18,7 @@ export default class SettingsDialog extends React.Component {
         this.state.showInvisibles = false;
         this.state.darkThemePreview = false;
         this.state.theme = 'monokai';
+        this.state.enableSnippets = false;
 
         this.dialogRef = React.createRef();
     }
@@ -36,6 +37,7 @@ export default class SettingsDialog extends React.Component {
             wrap: options.editor.wrap === 'off' ? false : (options.editor.wrap === 'free'),
             showInvisibles: !!options.editor.showInvisibles,
             theme: (options.editor.theme || '').replace('ace/theme/', ''),
+            enableSnippets: !!options.editor.enableSnippets,
             darkThemePreview: !!options.renderer.darkThemePreview,
         });
         setTimeout(() => this.setState({showFields: true}), 30);
@@ -83,6 +85,12 @@ export default class SettingsDialog extends React.Component {
         });
     }
 
+    handleEnableSnippetsChange(ev) {
+        this.setState({
+            enableSnippets: ev.target.checked,
+        });
+    }
+
     handleDarkThemePreviewChange(ev) {
         this.setState({
             darkThemePreview: ev.target.checked,
@@ -110,6 +118,9 @@ export default class SettingsDialog extends React.Component {
                 wrap: this.state.wrap,
                 showInvisibles: this.state.showInvisibles,
                 theme: `ace/theme/${this.state.theme}`,
+                enableBasicAutocompletion: this.state.enableSnippets,
+                enableSnippets: this.state.enableSnippets,
+                enableLiveAutocompletion: this.state.enableSnippets,
             },
             renderer: {
                 darkThemePreview: this.state.darkThemePreview,
@@ -186,21 +197,28 @@ export default class SettingsDialog extends React.Component {
                                 (span "Soft tabs") )))
                     (div (@ (className "row")
                             (style (margin "0")) )
-                        (div (@ (className "input-field col s4"))
+                        (div (@ (className "input-field col s3"))
                             (label
                                 (input (@ (type "checkbox")
                                           (className "filled-in")
                                           (checked ${this.state.wrap ? 'checked' : ''})
                                           (onChange ${(ev) => this.handleWrapChange(ev)}) ))
                                 (span "Wrap") ))
-                        (div (@ (className "input-field col s4"))
+                        (div (@ (className "input-field col s3"))
                             (label
                                 (input (@ (type "checkbox")
                                           (className "filled-in")
                                           (checked ${this.state.showInvisibles ? 'checked' : ''})
                                           (onChange ${(ev) => this.handleShowInvisiblesChange(ev)}) ))
                                 (span "Show Invisibles") ))
-                        (div (@ (className "input-field col s4"))
+                        (div (@ (className "input-field col s3"))
+                            (label
+                                (input (@ (type "checkbox")
+                                          (className "filled-in")
+                                          (checked ${this.state.enableSnippets ? 'checked' : ''})
+                                          (onChange ${(ev) => this.handleEnableSnippetsChange(ev)}) ))
+                                (span "Enable Snippets") ))
+                        (div (@ (className "input-field col s3"))
                             (label
                                 (input (@ (type "checkbox")
                                           (className "filled-in")

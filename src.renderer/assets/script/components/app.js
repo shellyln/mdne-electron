@@ -33,7 +33,11 @@ import { getSuggests as getMdSuggests,
 
 const LOCAL_STORAGE_KEY = '_mdne_app_settings__Xlnuf3Ao';
 const LOCAL_STORAGE_VERSION = 2;
-const LOCAL_STORAGE_INITIAL = `{"version":${LOCAL_STORAGE_VERSION},"editor":{},"renderer":{}}`;
+const LOCAL_STORAGE_INITIAL = JSON.stringify({
+    version: LOCAL_STORAGE_VERSION,
+    editor: {},
+    renderer: {},
+});
 
 
 export default class App extends React.Component {
@@ -134,10 +138,13 @@ export default class App extends React.Component {
         {
             const appSettingsStr = window.localStorage.getItem(LOCAL_STORAGE_KEY) || LOCAL_STORAGE_INITIAL;
             const appSettings = JSON.parse(appSettingsStr);
-            const editor = AppState.AceEditor[this.state.currentAceId];
-            editor.setOptions(appSettings.editor ?? {});
             this.setState({
                 darkThemePreview: appSettings?.renderer?.darkThemePreview ?? false,
+            });
+
+            ace.config.loadModule('ace/ext/language_tools', () => {
+                const editor = AppState.AceEditor[this.state.currentAceId];
+                editor.setOptions({...JSON.parse(LOCAL_STORAGE_INITIAL).editor, ...appSettings.editor ?? {}});
             });
         }
 
