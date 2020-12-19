@@ -191,13 +191,17 @@ export default class App extends React.Component {
                 this.setState({counter: this.state.counter + 1});
             } else {
                 setEditorNewFile();
-                this.openFileOpenDialog();
+                if (! AppState.skipDropDialog) {
+                    this.openFileOpenDialog();
+                }
             }
         })
         // eslint-disable-next-line no-unused-vars
         .catch(e => {
             setEditorNewFile();
-            this.openFileOpenDialog();
+            if (! AppState.skipDropDialog) {
+                this.openFileOpenDialog();
+            }
         });
     }
 
