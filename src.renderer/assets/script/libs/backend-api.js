@@ -17,6 +17,9 @@ if (window._MDNE_BACKEND_TYPE === 'CARLO_RPC') {
 } else if (window._MDNE_BACKEND_TYPE === 'ELECTRON_IPC') {
     // Electron backend
     backend = electronBackend;
+} else if (window._MDNE_BACKEND_TYPE === 'EXTERNAL') {
+    // External backend
+    backend = {...window._mdneExternalBackend}; // prevent highjacking
 } else {
     // Fallback (for Browser)
     backend = browserBackend;
