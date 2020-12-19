@@ -608,6 +608,8 @@ export default class App extends React.Component {
     // eslint-disable-next-line no-unused-vars
     handleCommandBoxOnBlur(ev) {
         M.Toast.dismissAll();
+        const editor = AppState.AceEditor[this.state.currentAceId];
+        editor.focus();
     }
 
     handleSplitterOnPointerDown(ev) {
