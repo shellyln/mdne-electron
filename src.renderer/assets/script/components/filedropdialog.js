@@ -24,10 +24,14 @@ export default class FileDropDialog extends React.Component {
     }
 
     showModal(options, handler) {
-        this.dialogRef.current.showModal();
-        document.activeElement.blur();
         this.options = options;
         this.handler = handler;
+        if (AppState.skipDropDialog) {
+            this.handleOnOpenDialogClick(null);
+        } else {
+            this.dialogRef.current.showModal();
+            document.activeElement.blur();
+        }
     }
 
     openFile(path, text) {
@@ -87,7 +91,9 @@ export default class FileDropDialog extends React.Component {
     }
 
     async handleOnOpenDialogClick(ev) {
-        this.handleCancelClick(ev);
+        if (ev) {
+            this.handleCancelClick(ev);
+        }
         try {
             this.options.fileOpenDialog.showModal({
                 title: 'Open',
