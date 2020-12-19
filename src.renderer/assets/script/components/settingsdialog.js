@@ -39,6 +39,7 @@ export default class SettingsDialog extends React.Component {
             theme: (options.editor.theme || '').replace('ace/theme/', ''),
             enableSnippets: !!options.editor.enableSnippets,
             darkThemePreview: !!options.renderer.darkThemePreview,
+            skipDropDialog: !!options.app.skipDropDialog,
         });
         setTimeout(() => this.setState({showFields: true}), 30);
     }
@@ -97,6 +98,12 @@ export default class SettingsDialog extends React.Component {
         });
     }
 
+    handleSkipDropDialogChange(ev) {
+        this.setState({
+            skipDropDialog: ev.target.checked,
+        });
+    }
+
     handleThemeChange(ev) {
         this.setState({
             theme: ev.target.value,
@@ -124,6 +131,9 @@ export default class SettingsDialog extends React.Component {
             },
             renderer: {
                 darkThemePreview: this.state.darkThemePreview,
+            },
+            app: {
+                skipDropDialog: this.state.skipDropDialog,
             },
         });
     }
@@ -225,6 +235,15 @@ export default class SettingsDialog extends React.Component {
                                           (checked ${this.state.darkThemePreview ? 'checked' : ''})
                                           (onChange ${(ev) => this.handleDarkThemePreviewChange(ev)}) ))
                                 (span "Preview in dark theme") )))
+                    (div (@ (className "row")
+                            (style (margin "0")) )
+                        (div (@ (className "input-field col s3"))
+                            (label
+                                (input (@ (type "checkbox")
+                                          (className "filled-in")
+                                          (checked ${this.state.skipDropDialog ? 'checked' : ''})
+                                          (onChange ${(ev) => this.handleSkipDropDialogChange(ev)}) ))
+                                (span "Skip file drop dialog") )))
                     (div (@ (className "row")
                             (style (margin "40px 0 0 0")
                                    (color "white") ))

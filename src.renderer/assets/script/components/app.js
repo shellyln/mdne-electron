@@ -37,6 +37,7 @@ const LOCAL_STORAGE_INITIAL = JSON.stringify({
     version: LOCAL_STORAGE_VERSION,
     editor: {},
     renderer: {},
+    app: {},
 });
 
 
@@ -141,6 +142,7 @@ export default class App extends React.Component {
             this.setState({
                 darkThemePreview: appSettings?.renderer?.darkThemePreview ?? false,
             });
+            AppState.skipDropDialog = appSettings?.app?.skipDropDialog ?? false;
 
             ace.config.loadModule('ace/ext/language_tools', () => {
                 const editor = AppState.AceEditor[this.state.currentAceId];
@@ -466,12 +468,13 @@ export default class App extends React.Component {
     // eslint-disable-next-line no-unused-vars
     handleSettingsClick(ev) {
         const editor = AppState.AceEditor[this.state.currentAceId];
-        const appSettingsStr = window.localStorage.getItem(LOCAL_STORAGE_KEY) || LOCAL_STORAGE_INITIAL;
+        const appSettings = JSON.parse(window.localStorage.getItem(LOCAL_STORAGE_KEY) || LOCAL_STORAGE_INITIAL);
 
         this.settingsDialogRef.current.showModal(
             {
                 editor: editor.getOptions(),
-                renderer: JSON.parse(appSettingsStr).renderer ?? {},
+                renderer: appSettings.renderer ?? {},
+                app: appSettings.app ?? {},
             },
             (settings) => {
                 settings.version = LOCAL_STORAGE_VERSION;
@@ -480,6 +483,7 @@ export default class App extends React.Component {
                 this.setState({
                     darkThemePreview: settings?.renderer?.darkThemePreview ?? false,
                 });
+                AppState.skipDropDialog = settings?.app?.skipDropDialog;
             },
         );
     }
