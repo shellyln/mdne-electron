@@ -3,7 +3,8 @@
 // https://github.com/shellyln
 
 
-import { nativeConfirmSync,
+import { resourceBaseDirectory,
+         nativeConfirmSync,
          saveFile,
          getStartupFile,
          openURL,
@@ -208,7 +209,7 @@ export default class App extends React.Component {
     }
 
     afterFileOpen() {
-        this.rootRef.current.contentWindow.location.replace('empty.html');
+        this.rootRef.current.contentWindow.location.replace(`${resourceBaseDirectory}empty.html`);
 
         this.setState({stretched: true});
         this.savedEditorStyleWidth = null;
@@ -312,7 +313,7 @@ export default class App extends React.Component {
         if (! isPreviewable(AppState.inputFormat)) {
             // eslint-disable-next-line no-console
             console.error(`Preview of ${AppState.inputFormat} format is not supported.`);
-            this.rootRef.current.contentWindow.location.replace('error.html');
+            this.rootRef.current.contentWindow.location.replace(`${resourceBaseDirectory}error.html`);
         } else {
             if (this.state.isPdf) {
                 start(editor.getValue(), {
@@ -329,7 +330,7 @@ export default class App extends React.Component {
                 .catch(async (e) => {
                     // eslint-disable-next-line no-console
                     console.error(e);
-                    this.rootRef.current.contentWindow.location.replace('error.html');
+                    this.rootRef.current.contentWindow.location.replace(`${resourceBaseDirectory}error.html`);
                 });
             } else {
                 start(editor.getValue(), {
@@ -355,7 +356,7 @@ export default class App extends React.Component {
                 .catch(async (e) => {
                     // eslint-disable-next-line no-console
                     console.error(e);
-                    this.rootRef.current.contentWindow.location.replace('error.html');
+                    this.rootRef.current.contentWindow.location.replace(`${resourceBaseDirectory}error.html`);
                 });
             }
 
@@ -654,6 +655,7 @@ export default class App extends React.Component {
             !ua.match(' Iron Safari/') &&
             !ua.match(' Sleipnir/') &&
             !ua.match(' Mobile Safari/');
+        const iframeSrc = `${resourceBaseDirectory}empty.html`;
 
         return (lsx`
         (Template
@@ -756,7 +758,7 @@ export default class App extends React.Component {
                 (div (@ (className ($concat "OutputIframePlaceholder"
                                    ${this.state.splitterMoving ? "" : " collapsed"}) ) ))
                 (iframe (@ (ref ${this.rootRef})
-                           (src "empty.html")
+                           (src ${iframeSrc})
                            (style (background-color ${this.state.darkThemePreview && AppState.inputFormat === 'md' ? '#1b1f23' : 'white'}))
                            ; (sandbox "")
                            (className ($concat "OutputIframe"

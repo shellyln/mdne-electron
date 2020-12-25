@@ -4,6 +4,7 @@
 
 
 
+let resourceBaseDirectory_ = void 0;
 let nativeNotifyEditorDirty_ = void 0;
 let nativeAlert_ = void 0;
 let nativeAlertSync_ = void 0;
@@ -62,13 +63,24 @@ function convertFileFilters(filters) {
 }
 
 
-if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATION') {
+if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATION' || window._MDNE_BACKEND_TYPE === 'EXTERNAL_MIXED') {
     // Fallback (for Browser)
 
     window._MDNE_BACKEND_TYPE = 'BROWSER_EMULATION';
     window._MDNE_BACKEND_CAPS_NO_PDF_RENDERER = true;
     window._MDNE_BACKEND_CAPS_NO_PDF_PREVIEW_PLUGIN = true;
 
+    if (window._MDNE_BACKEND_RESOURCE_BASE_DIR) {
+        resourceBaseDirectory_ = window._MDNE_BACKEND_RESOURCE_BASE_DIR;
+    }
+
+    const showWelcomeFile = window._MDNE_BACKEND_SHOW_WELCOME_FILE ? true : false;
+    const replacementMacros = window._mdneReplacementMacros
+        ? Array.isArray(window._mdneReplacementMacros) ? window._mdneReplacementMacros.slice() : []
+        : [{
+            re: /!!!lsx\s([\s\S]+?)!!!/g,
+            fn: 'lsx', // evaluate input as LSX script
+        }];
     const welcomeFile = 'assets/data/welcome.md';
 
     /** @type {FileSystemFileHandle | null} */
@@ -120,15 +132,7 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
     // eslint-disable-next-line no-unused-vars
     renderByMenneu_ = (async (source, data, options, srcPath, ...exportPath) => {
         const opts = Object.assign({}, options, {
-            // NOTE: to enhance macros, define Vx02PGUB3NFWwhsd__replacementMacros.
-            replacementMacros: [{
-                re: /!!!lsx\s([\s\S]+?)!!!/g,
-                fn: 'lsx', // evaluate input as LSX script
-            }].concat(
-                window.Vx02PGUB3NFWwhsd__replacementMacros &&
-                Array.isArray(window.Vx02PGUB3NFWwhsd__replacementMacros) ?
-                    window.Vx02PGUB3NFWwhsd__replacementMacros:
-                    []),
+            replacementMacros: replacementMacros,
         });
         if (!opts.outputFormat || opts.outputFormat.toLowerCase() !== 'html') {
             const errText = `output format ${opts.outputFormat} is not available.`;
@@ -303,8 +307,8 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
     });
 
     getStartupFile_ = (async () => {
-        let targetPath = 'Welcome.md';
-        let targetUrl = welcomeFile;
+        let targetPath = void 0;
+        let targetUrl = void 0;
         const util = menneu.getAppEnv().RedAgateUtil;
 
         if (window.location.hash) {
@@ -335,6 +339,13 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
                 targetUrl = `data:text/plain,`;
             }
         }
+        if (! targetUrl) {
+            if (! showWelcomeFile) {
+                return void 0;
+            }
+            targetPath = 'Welcome.md';
+            targetUrl = welcomeFile;
+        }
         const response = await fetch(targetUrl, {});
         if (response.ok) {
             return {
@@ -351,7 +362,7 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
     });
 
     openNewWindow_ = (async () => {
-        window.open(window.location.pathname + '#filename=Untitled.md', '_blank', 'noopener');
+        window.open(`${window.location.pathname}${showWelcomeFile ? '#filename=Untitled.md' : ''}`, '_blank', 'noopener');
         return true;
     });
 
@@ -449,6 +460,7 @@ if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATI
 }
 
 
+export const resourceBaseDirectory = resourceBaseDirectory_;
 export const nativeNotifyEditorDirty = nativeNotifyEditorDirty_;
 export const nativeAlert = nativeAlert_;
 export const nativeAlertSync = nativeAlertSync_;

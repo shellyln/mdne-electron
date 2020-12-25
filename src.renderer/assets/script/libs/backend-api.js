@@ -20,12 +20,16 @@ if (window._MDNE_BACKEND_TYPE === 'CARLO_RPC') {
 } else if (window._MDNE_BACKEND_TYPE === 'EXTERNAL') {
     // External backend
     backend = {...window._mdneExternalBackend}; // prevent highjacking
+} else if (window._MDNE_BACKEND_TYPE === 'EXTERNAL_MIXED') {
+    // External backend
+    backend = {...browserBackend, ...window._mdneExternalBackend}; // prevent highjacking
 } else {
     // Fallback (for Browser)
     backend = browserBackend;
 }
 
 
+export const resourceBaseDirectory = backend.resourceBaseDirectory ?? '';
 export const nativeNotifyEditorDirty = backend.nativeNotifyEditorDirty;
 export const nativeAlert = backend.nativeAlert;
 export const nativeAlertSync = backend.nativeAlertSync;

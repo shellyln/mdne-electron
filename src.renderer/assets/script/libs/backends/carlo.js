@@ -52,6 +52,7 @@ if (window._MDNE_BACKEND_TYPE === 'CARLO_RPC') {
 }
 
 
+export const resourceBaseDirectory = void 0;
 export const nativeNotifyEditorDirty = nativeNotifyEditorDirty_;
 export const nativeAlert = nativeAlert_;
 export const nativeAlertSync = nativeAlertSync_;
