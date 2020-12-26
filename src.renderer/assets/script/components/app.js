@@ -5,7 +5,7 @@
 
 import { resourceBaseDirectory,
          nativeConfirmSync,
-         saveFile,
+         saveFileAs,
          getStartupFile,
          openURL,
          openNewWindow }         from '../libs/backend-api.js';
@@ -404,7 +404,7 @@ export default class App extends React.Component {
     async fileSaveAs(currentDir, fileName) {
         const editor = AppState.AceEditor[this.state.currentAceId];
 
-        const fileInfo = await saveFile(editor.getValue(), currentDir, fileName);
+        const fileInfo = await saveFileAs(editor.getValue(), currentDir, fileName);
         // eslint-disable-next-line require-atomic-updates
         AppState.filePath = fileInfo.path;
         // eslint-disable-next-line require-atomic-updates

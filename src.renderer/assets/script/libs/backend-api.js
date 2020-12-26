@@ -44,6 +44,7 @@ export const nativeFileSaveDialog = backend.nativeFileSaveDialog;
 export const renderByMenneu = backend.renderByMenneu;
 export const loadFile = backend.loadFile;
 export const saveFile = backend.saveFile;
+export const saveFileAs = backend.saveFileAs;
 export const listDirectory = backend.listDirectory;
 export const listDesktopDirectory = backend.listDesktopDirectory;
 export const listHomeDirectory = backend.listHomeDirectory;

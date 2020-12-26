@@ -234,6 +234,7 @@ export const nativeFileSaveDialog = nativeFileSaveDialog_;
 export const renderByMenneu = renderByMenneu_;
 export const loadFile = loadFile_;
 export const saveFile = saveFile_;
+export const saveFileAs = saveFile_;  // Electron backend have no `saveFileAs` API
 export const listDirectory = listDirectory_;
 export const listDesktopDirectory = listDesktopDirectory_;
 export const listHomeDirectory = listHomeDirectory_;
