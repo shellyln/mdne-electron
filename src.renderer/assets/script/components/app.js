@@ -101,6 +101,26 @@ export default class App extends React.Component {
             return config;
         });
         // commandRunner.setGlobals({});
+
+        {
+            const appSettings = this.getAppSettings();
+            this.state.darkThemePreview = appSettings.renderer?.darkThemePreview ?? false;
+            AppState.skipDropDialog = appSettings.app?.skipDropDialog ?? false;
+        }
+
+        {
+            const ua = window.navigator.userAgent;
+            // NOTE: Chromium Edge treats as Chrome.
+            this.isChrome =
+                ua.match(' Chrome/') &&
+                !ua.match(' CriOS/') &&
+                !ua.match(' OPR/') &&
+                !ua.match(' Presto/') &&
+                !ua.match(' Vivaldi/') &&
+                !ua.match(' Iron Safari/') &&
+                !ua.match(' Sleipnir/') &&
+                !ua.match(' Mobile Safari/');
+        }
     }
 
     componentDidMount() {
@@ -138,13 +158,7 @@ export default class App extends React.Component {
         }
 
         {
-            const appSettingsStr = window.localStorage.getItem(LOCAL_STORAGE_KEY) || LOCAL_STORAGE_INITIAL;
-            const appSettings = JSON.parse(appSettingsStr);
-            this.setState({
-                darkThemePreview: appSettings?.renderer?.darkThemePreview ?? false,
-            });
-            AppState.skipDropDialog = appSettings?.app?.skipDropDialog ?? false;
-
+            const appSettings = this.getAppSettings();
             ace.config.loadModule('ace/ext/language_tools', () => {
                 const editor = AppState.AceEditor[this.state.currentAceId];
                 editor.setOptions({...JSON.parse(LOCAL_STORAGE_INITIAL).editor, ...appSettings.editor ?? {}});
@@ -206,6 +220,15 @@ export default class App extends React.Component {
                 this.openFileOpenDialog();
             }
         });
+    }
+
+    getAppSettings() {
+        return JSON.parse(window.localStorage.getItem(LOCAL_STORAGE_KEY) || LOCAL_STORAGE_INITIAL);
+    }
+
+    saveAppSettings(settings) {
+        window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings));
+        return settings;
     }
 
     afterFileOpen() {
@@ -469,7 +492,7 @@ export default class App extends React.Component {
     // eslint-disable-next-line no-unused-vars
     handleSettingsClick(ev) {
         const editor = AppState.AceEditor[this.state.currentAceId];
-        const appSettings = JSON.parse(window.localStorage.getItem(LOCAL_STORAGE_KEY) || LOCAL_STORAGE_INITIAL);
+        const appSettings = this.getAppSettings();
 
         this.settingsDialogRef.current.showModal(
             {
@@ -480,11 +503,11 @@ export default class App extends React.Component {
             (settings) => {
                 settings.version = LOCAL_STORAGE_VERSION;
                 editor.setOptions(settings.editor);
-                window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings));
+                this.saveAppSettings(settings);
                 this.setState({
-                    darkThemePreview: settings?.renderer?.darkThemePreview ?? false,
+                    darkThemePreview: settings.renderer?.darkThemePreview ?? false,
                 });
-                AppState.skipDropDialog = settings?.app?.skipDropDialog;
+                AppState.skipDropDialog = settings.app?.skipDropDialog;
             },
         );
     }
@@ -644,17 +667,6 @@ export default class App extends React.Component {
 
     render() {
         const isEmulation = window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATION';
-        const ua = window.navigator.userAgent;
-        // NOTE: Chromium Edge treats as Chrome.
-        const isChrome =
-            ua.match(' Chrome/') &&
-            !ua.match(' CriOS/') &&
-            !ua.match(' OPR/') &&
-            !ua.match(' Presto/') &&
-            !ua.match(' Vivaldi/') &&
-            !ua.match(' Iron Safari/') &&
-            !ua.match(' Sleipnir/') &&
-            !ua.match(' Mobile Safari/');
         const iframeSrc = `${resourceBaseDirectory}empty.html`;
 
         return (lsx`
@@ -721,7 +733,7 @@ export default class App extends React.Component {
                                   (type "text")
                                   (placeholder ($concat
                                       "Command palette    (" ${
-                                      isEmulation && isChrome ? 'Alt+Ctrl+Shift+O' :'Ctrl+Shift+O'
+                                      isEmulation && this.isChrome ? 'Alt+Ctrl+Shift+O' :'Ctrl+Shift+O'
                                       } ")" ))
                                   (spellcheck "false")
                                   (onBlur ${(ev) => this.handleCommandBoxOnBlur(ev)})
