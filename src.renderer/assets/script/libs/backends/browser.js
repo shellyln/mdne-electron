@@ -66,7 +66,7 @@ function convertFileFilters(filters) {
 if (!window._MDNE_BACKEND_TYPE || window._MDNE_BACKEND_TYPE === 'BROWSER_EMULATION' || window._MDNE_BACKEND_TYPE === 'EXTERNAL_MIXED') {
     // Fallback (for Browser)
 
-    window._MDNE_BACKEND_TYPE = 'BROWSER_EMULATION';
+    window._MDNE_BACKEND_TYPE = window._MDNE_BACKEND_TYPE ?? 'BROWSER_EMULATION';
     window._MDNE_BACKEND_CAPS_NO_PDF_RENDERER = true;
     window._MDNE_BACKEND_CAPS_NO_PDF_PREVIEW_PLUGIN = true;
 
