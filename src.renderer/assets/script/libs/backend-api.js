@@ -22,7 +22,11 @@ if (window._MDNE_BACKEND_TYPE === 'CARLO_RPC') {
     backend = {...window._mdneExternalBackend}; // prevent highjacking
 } else if (window._MDNE_BACKEND_TYPE === 'EXTERNAL_MIXED') {
     // External backend
-    backend = {...browserBackend, ...window._mdneExternalBackend}; // prevent highjacking
+    if (typeof window._mdneExternalBackend === 'function') {
+        backend = {...browserBackend, ...window._mdneExternalBackend(browserBackend)}; // prevent highjacking
+    } else {
+        backend = {...browserBackend, ...window._mdneExternalBackend}; // prevent highjacking
+    }
 } else {
     // Fallback (for Browser)
     backend = browserBackend;
