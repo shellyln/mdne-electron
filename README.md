@@ -15,7 +15,7 @@
 
 ## Features
 * Live preview of Markdown, HTML, [LSX](https://github.com/shellyln/liyad#what-is-lsx) formats.
-* Export Markdown, HTML, LSX into PDF or HTML.
+* Export Markdown, HTML, and LSX into PDF or HTML.
 * Code highlighting.
   * C#
   * CSS
@@ -64,11 +64,12 @@
   * Standalone offline desktop app for Windows/Mac/Linux.
     * *This repository*
     * [Electron](https://electronjs.org/) app
+* [mdne online](https://github.com/shellyln/mdne-electron)
+  * *This repository*
+  * PWA (Progressive Web Apps)
 * [mdne](https://github.com/shellyln/mdne)
   * Offline desktop app for Google Chrome browser + Node.js.
     * [Carlo](https://github.com/GoogleChromeLabs/carlo) app
-* [mdne online](https://shellyln.github.io/mdne/)
-  * Live demo (PWA)
 * [mdne-for-kintone](https://github.com/shellyln/mdne-for-kintone)
   * Edit kintone record's field. (browser app)
 
@@ -77,7 +78,7 @@
 Please use [Ménneu](https://github.com/shellyln/menneu#use-cli) CLI.
 
 
-## Live demo
+## Live demo (mdne online; PWA)
 * [https://shellyln.github.io/mdne/](https://shellyln.github.io/mdne/)
 
 #### Live demo browser requirements
@@ -123,7 +124,7 @@ npm run build:mainproc
 npm run build:renderer
 ```
 
-### Build [mdne online](https://shellyln.github.io/mdne/) PWA app
+### Build _mdne online_ PWA app
 ```sh
 npm run build:browser
 ```
@@ -135,16 +136,20 @@ npm run clean
 
 ### Start electron app for debug
 ```sh
-npm run start
+npm start
 ```
 
 ### Build electron distribution executable files (unpacked)
 ```sh
+# npm run clean
+# npm run build
 npm run dist:unpacked
 ```
 
 ### Build electron distribution executable files (packing to the installer)
 ```sh
+# npm run clean
+# npm run build
 npm run dist          # build for current machine
 
 # npm run dist:win    # build for windows (x64)
@@ -193,6 +198,8 @@ Copyright (c) 2019-2020 Shellyl_N and Authors.
 * [Carlo](https://github.com/GoogleChromeLabs/carlo): [license](https://github.com/GoogleChromeLabs/carlo/blob/master/LICENSE) (Apache License 2.0)
 * [Materialize](https://materializecss.com/): [license](https://github.com/Dogfalo/materialize/blob/v1-dev/LICENSE) (MIT)
 * [Normalize.css](https://necolas.github.io/normalize.css/): [license](https://github.com/necolas/normalize.css/blob/master/LICENSE.md) (MIT)
+* [github-markdown-css](https://github.com/sindresorhus/github-markdown-css): [license](https://github.com/sindresorhus/github-markdown-css/blob/gh-pages/license) (MIT)
+* [highlight.js](https://github.com/highlightjs/highlight.js): [license](https://github.com/highlightjs/highlight.js/blob/master/LICENSE) (BSD 3-Clause)
 * [React](https://reactjs.org/): [license](https://github.com/facebook/react/blob/master/LICENSE) (MIT)
 * [pako](https://github.com/nodeca/pako): [license](https://github.com/nodeca/pako/blob/master/LICENSE) (MIT + ZLIB)
 * [dialog-polyfill](https://github.com/GoogleChrome/dialog-polyfill): [license](https://github.com/GoogleChrome/dialog-polyfill/blob/master/LICENSE) (BSD-3-Clause)
