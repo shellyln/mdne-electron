@@ -65,8 +65,12 @@
     * *This repository*
     * [Electron](https://electronjs.org/) app
 * [mdne online](https://github.com/shellyln/mdne-electron)
-  * *This repository*
-  * PWA (Progressive Web Apps)
+  * Online markdown editor for Chrome/Chromium Edge/Firefox.
+    * *This repository*
+    * [PWA](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps) (Progressive Web Apps)
+* [mdne-sf](https://github.com/shellyln/mdne-sf)
+  * Edit Salesforce record's field. (browser app)
+  * Markdown preview Visualforce page example
 * [mdne](https://github.com/shellyln/mdne)
   * Offline desktop app for Google Chrome browser + Node.js.
     * [Carlo](https://github.com/GoogleChromeLabs/carlo) app
