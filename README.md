@@ -71,7 +71,7 @@
 * [mdne-sf](https://github.com/shellyln/mdne-sf)
   * Edit Salesforce record's field. (browser app)
   * Markdown preview Visualforce page example
-* [mdne](https://github.com/shellyln/mdne)
+* [mdne (mdne-classic)](https://github.com/shellyln/mdne)
   * Offline desktop app for Google Chrome browser + Node.js.
     * [Carlo](https://github.com/GoogleChromeLabs/carlo) app
 * [mdne-for-kintone](https://github.com/shellyln/mdne-for-kintone)
