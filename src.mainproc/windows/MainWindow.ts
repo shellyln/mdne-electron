@@ -25,7 +25,10 @@ export function createMainWindow(): electron.BrowserWindow {
     // Create the browser window.
     let mainWindow: BrowserWindow | null = new BrowserWindow({
         webPreferences: {
-            nodeIntegration: false,
+            nodeIntegration: false,             // Electron 11: default is false
+            nodeIntegrationInWorker: false,     // Electron 11: default is false
+            nodeIntegrationInSubFrames: false,  // Electron 11: default is false
+            enableRemoteModule: false,          // Electron 11: default is false
             contextIsolation: true,
             preload: path.join(app.getAppPath(), 'src.preload/preload-isolated.js'),
             plugins: true, // enable PDF plugin
